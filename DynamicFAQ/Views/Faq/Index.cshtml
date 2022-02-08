@@ -1,0 +1,102 @@
+﻿@model IEnumerable<DynamicFAQ.Models.Section>
+
+@{
+    ViewData["Title"] = "Index";
+    var idx = 0;
+}
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="lib/font-awesome/css/font-awesome.min.css" />
+
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>FAQ <small>Frequently Asked Questions</small></h1>
+    </div>
+    <!-- Bootstrap FAQ - START -->
+    <p>
+        <a asp-action="Create">Create New Section</a>
+    </p>
+    <div class="container">
+
+        <br />
+        <div class="panel-group" id="accordion">
+            @foreach (var sec in Model)
+            {
+                <!--SECTION TITLE-->
+                <div class="faqHeader">@sec.Name</div>
+                <div class="SectionOptions">
+            <a asp-action="Edit" asp-route-id="@sec.Id">Edit Section</a>
+            <a asp-action="Delete" asp-route-id="@sec.Id">Delete Section</a>
+            <a asp-action="CreateFaq" asp-route-id="@sec.Id">Add Faq in Section</a>
+            <a asp-action="Details" asp-route-id="@sec.Id">Section Details</a>
+        </div>
+
+
+
+                @foreach (var qa in sec.Data)
+                {
+
+                    <!--QUESTION-->
+                    <div class="FaqOptions">
+                        <a asp-action="DeleteFaq" asp-route-id="@qa.Id">Delete Faq</a>
+                        <a asp-action="EditFaq" asp-route-id="@qa.Id">Edit Faq</a>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="@("#"+"collapse" + idx.ToString())">
+                                    @qa.Question
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="@("collapse" + idx.ToString())" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                @qa.Answer
+                            </div>
+                        </div>
+                    </div>
+
+                    idx++;
+                }
+
+            }
+
+
+        </div>
+    </div>
+</div>
+
+        <style>
+            .panel-heading .accordion-toggle:after {
+                font-family: 'Glyphicons Halflings'; 
+                content: "\e114";    
+                float: right;        
+                color: grey;         
+            }
+            .panel-heading .accordion-toggle.collapsed:after {
+                
+                content: "\e080";    
+            }
+            .faqHeader {
+                font-size: 27px;
+                margin: 20px;
+            }
+
+            .FaqOptions {
+                text-align: right
+            }
+            .SectionOptions {
+                text-align: center
+            }
+        </style>
+</body>
