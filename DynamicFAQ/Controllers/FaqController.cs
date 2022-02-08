@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DynamicFAQ.Data;
 using DynamicFAQ.Models;
 using System.Data;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DynamicFAQ.Controllers
@@ -17,7 +18,6 @@ namespace DynamicFAQ.Controllers
     {
 
         private readonly ApplicationDbContext _db;
-        private static int _currentSectionId;
 
         public FaqController(ApplicationDbContext db)
         {
@@ -31,40 +31,25 @@ namespace DynamicFAQ.Controllers
             return View(await _db.Section.Include(m => m.Data).ToListAsync());
         }
 
-        // GET: Faq/Details/5
+
+
+
+        //----------------------------------------------------------------------------------------------------------
+
+
+
+        // GET: Faq/CreateSection
         [Authorize]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var section = await _db.Section.Include(m =>m.Data)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (section == null)
-            {
-                return NotFound();
-            }
-
-            _currentSectionId = section.Id;
-            return View(section);
-        }
-
-        // GET: Faq/Create
-        [Authorize]
-        public IActionResult Create()
+        public IActionResult CreateSection()
         {
             return View();
         }
 
-        // POST: Faq/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Faq/CreateSection
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Section section)
+        public async Task<IActionResult> CreateSection([Bind("Id,Name")] Section section)
         {
             if (ModelState.IsValid)
             {
@@ -75,9 +60,15 @@ namespace DynamicFAQ.Controllers
             return View(section);
         }
 
-        // GET: Faq/Edit/5
+
+
+
+
+        //----------------------------------------------------------------------------------------------------------
+
+        // GET: Faq/Edit/{SectionId}
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditSection(int? id)
         {
             if (id == null)
             {
@@ -92,13 +83,11 @@ namespace DynamicFAQ.Controllers
             return View(section);
         }
 
-        // POST: Faq/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Faq/Edit/{SectionId}
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Section section)
+        public async Task<IActionResult> EditSection(int id, [Bind("Id,Name")] Section section)
         {
             if (id != section.Id)
             {
@@ -128,7 +117,13 @@ namespace DynamicFAQ.Controllers
             return View(section);
         }
 
-        // GET: Faq/Edit/5
+
+
+        //----------------------------------------------------------------------------------------------------------
+
+
+
+        // GET: Faq/Edit/{FaqId}
         [Authorize]
         public async Task<IActionResult> EditFaq(int? id)
         {
@@ -145,9 +140,7 @@ namespace DynamicFAQ.Controllers
             return View(qa);
         }
 
-        // POST: Faq/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Faq/Edit/{FaqId}
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -182,9 +175,16 @@ namespace DynamicFAQ.Controllers
         }
 
 
-        // GET: Faq/Delete/5
+
+
+
+        //----------------------------------------------------------------------------------------------------------
+
+
+
+        // GET: Faq/Delete/{SectionId}
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteSection(int? id)
         {
             if (id == null)
             {
@@ -201,11 +201,11 @@ namespace DynamicFAQ.Controllers
             return View(section);
         }
 
-        // POST: Faq/Delete/0
+        // POST: Faq/Delete/{SectionId}
         [Authorize]
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteSection")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteSectionConfirmed(int id)
         {
             var section = await _db.Section.FindAsync(id);
             _db.Section.Remove(section);
@@ -213,7 +213,13 @@ namespace DynamicFAQ.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Faq/DeleteFaq/5
+
+
+        //----------------------------------------------------------------------------------------------------------
+
+
+
+        // GET: Faq/DeleteFaq/{FaqId}
         [Authorize]
         public async Task<IActionResult> DeleteFaq(int? id)
         {
@@ -232,39 +238,57 @@ namespace DynamicFAQ.Controllers
             return View(qa);
         }
 
-        // POST: Faq/DeleteFaq/5
+        // POST: Faq/DeleteFaq/{FaqId}
         [Authorize]
         [HttpPost, ActionName("DeleteFaq")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteFaqConfirmed(int id)
+        public async Task<IActionResult> DeleteFaqConfirmed(int? id)
         {
-            var qa = await _db.QuestionAnswer.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var qa = await _db.QuestionAnswer.FirstOrDefaultAsync(m => m.Id == id);
+            if (qa == null)
+            {
+                return NotFound();
+            }
             _db.QuestionAnswer.Remove(qa);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
 
-        // GET: Faq/Section/CreateFaq
+
+        //----------------------------------------------------------------------------------------------------------
+
+
+        // GET: Faq/CreateFaq/{SectionId}
         [Authorize]
-        public IActionResult CreateFaq()
+        [HttpGet]
+        public IActionResult CreateFaq(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             return View();
         }
 
-        // POST: Faq/Section/CreateFaq
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Faq/CreateFaq/{SectionId}
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateFaq([Bind("Id,Question,Answer")] QuestionAnswer questionAnswer)
+        public async Task<IActionResult> CreateFaq(int? id,[Bind("Question,Answer")] QuestionAnswer questionAnswer)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
-
                 var addedFaq=_db.QuestionAnswer.Add(questionAnswer);
-                addedFaq.Property("SectionId").CurrentValue=_currentSectionId;
+                addedFaq.Property("SectionId").CurrentValue= id;
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -272,7 +296,7 @@ namespace DynamicFAQ.Controllers
         }
 
 
-
+        //----------------------------------------------------------------------------------------------------------
 
         private bool SectionExists(int id)
         {
