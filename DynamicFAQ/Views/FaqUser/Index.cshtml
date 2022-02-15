@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="lib/font-awesome/css/font-awesome.min.css" />
 
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="js\jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -22,6 +22,10 @@
         <div class="page-header">
             <h1>FAQ <small>Frequently Asked Questions</small></h1>
         </div>
+    <div class="container">
+
+    <br />
+    </div>
         @foreach (var sec in Model)
         {
             <!--FAQ - START -->
@@ -33,7 +37,8 @@
 
                     <!--SECTION TITLE-->
                     <div class="faqHeader">@sec.Name</div>
-
+                    
+                    
 
                     @foreach (var item in sec.Data)
                     {

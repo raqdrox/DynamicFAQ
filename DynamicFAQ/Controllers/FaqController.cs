@@ -207,7 +207,21 @@ namespace DynamicFAQ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteSectionConfirmed(int id)
         {
-            var section = await _db.Section.FindAsync(id);
+            var section = await _db.Section.Include(m => m.Data)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            List<int> itemIdList=new List<int>();
+            foreach (var item in section.Data)
+            {
+                itemIdList.Add(item.Id);
+            }
+
+            foreach (var item in itemIdList)
+            {
+                var qa = await _db.QuestionAnswer.FirstOrDefaultAsync(m => m.Id == item);
+                _db.QuestionAnswer.Remove(qa);
+                await _db.SaveChangesAsync();
+            }
+            
             _db.Section.Remove(section);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
