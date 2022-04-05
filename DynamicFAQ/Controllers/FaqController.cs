@@ -286,6 +286,7 @@ namespace DynamicFAQ.Controllers
             {
                 return NotFound();
             }
+           
             return View();
         }
 
@@ -311,6 +312,45 @@ namespace DynamicFAQ.Controllers
 
 
         //----------------------------------------------------------------------------------------------------------
+
+
+        // GET: Faq/ReorderFaq/{SectionId}
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ReorderFaq(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var section = await _db.Section.Include(m => m.Data)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            return View(section);
+        }
+
+        // POST: Faq/ReorderFaq/{SectionId}
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReorderFaq(int? id, [Bind("Question,Answer")] QuestionAnswer questionAnswer)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                var addedFaq = _db.QuestionAnswer.Add(questionAnswer);
+                addedFaq.Property("SectionId").CurrentValue = id;
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+
+        //----------------------------------------------------------------------------------------------------------
+
 
         private bool SectionExists(int id)
         {
