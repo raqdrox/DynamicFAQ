@@ -1,0 +1,310 @@
+﻿@model IEnumerable<DynamicFAQ.Models.Section>
+
+@{
+    ViewData["Title"] = "Index";
+    int i = 0;
+}
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.2.0/css/ionicons.min.css" integrity="sha256-F3Xeb7IIFr1QsWD113kV2JXaEbjhsfpgrKkwZFGIA4E=" crossorigin="anonymous" />
+
+    <script type="text/javascript" src="js\jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+</head>
+<body>
+
+    <div class="container-fluid">
+        <!-- Row -->
+        <div class="row">
+            <div class="col-xl-12 pa-0">
+                <div class="faq-search-wrap bg-teal-light-3">
+                    <div class="container">
+                        <h1 class="display-5 text-white mb-20">Ask a question or browse by category below.</h1>
+                        <div class="form-group w-100 mb-0">
+                            <div class="input-group">
+                                <input class="form-control form-control-lg filled-input bg-white" placeholder="Search by keywords" type="text">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><span class="feather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container mt-sm-60 mt-30">
+                    <div class="hk-row">
+                        <div class="col-xl-4">
+                            <div class="card">
+                                <h6 class="card-header">
+                                    Category
+                                </h6>
+                                <ul class="list-group list-group-flush" id="sectionbtn">
+                                    <!-- Sec Btn Container-->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <div class="card card-lg">
+                                <h3 class="card-header border-bottom-0" id="sectionNameHead">
+                                    <!-- Section Name-->
+                                </h3>
+                                <div id="qaContainer">
+                                    <div class="accordion accordion-type-2 accordion-flush" id="accordion_2">
+
+                                        <!-- QA Container-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Row -->
+    </div>
+
+    <script id="qatmpl" type="text/x-handlebars-template">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse_{{id}}i" aria-expanded="false">{{ques}}</a>
+            </div>
+            <div id="collapse_{{id}}i" class="collapse" data-parent="#accordion_2">
+                <div class="card-body pa-15">{{ans}}</div>
+            </div>
+        </div>
+    </script>
+
+    <script id="btntmpl" type="text/x-handlebars-template">
+        <li id="QAsectionBtn{{id}}" data-sec-id={{id}} class="list-group-item d-flex align-items-center">
+            <i class="ion ion-md-sunny mr-15" data-sec-id={{id}}></i>{{sec}}
+        </li>
+    </script>
+    <script type="text/javascript">
+            var sectionArray = @Html.Raw(Json.Serialize(@Model.ToList()));
+            var currentSectionId = 0;
+            var qatmpl = Handlebars.compile(document.getElementById('qatmpl').innerHTML);
+            var btntmpl = Handlebars.compile(document.getElementById('btntmpl').innerHTML);
+
+
+            $(document).ready(function () {
+
+                setupSectionButtons();
+                refreshFaqContainer();
+
+                function changeCurrSection(secId) {
+
+                    currentSectionId = parseInt(secId);
+                    refreshFaqContainer();
+                }
+
+                function refreshFaqContainer() {
+                    var currSec = sectionArray[currentSectionId];
+
+                    var containerPGroup = $("#qaContainer").children("#accordion_2");
+                    $("#sectionNameHead").empty();
+                    $("#sectionNameHead").append(currSec.name);
+                    containerPGroup.empty();
+                    for (var i = 0; i < currSec.data.length; i++) {
+                        containerPGroup.append(qatmpl({
+                            id: i.toString(),
+                            ques: currSec.data[i].question,
+                            ans: currSec.data[i].answer
+
+                        }));
+                    }
+                }
+
+                function setupSectionButtons() {
+                    for (var i = 0; i < sectionArray.length; i++) {
+                        var btn = btntmpl({
+                            id: i.toString(),
+                            sec: sectionArray[i].name
+                        });
+
+                        $("#sectionbtn").append(btn);
+                    }
+
+                    $("#sectionbtn").children('li').each(function () {
+                        if (parseInt($(this).attr("data-sec-id"))===currentSectionId) {
+                            $(this).addClass('active');
+                        }
+                        this.addEventListener('click', function () {
+                            var btnId = parseInt($(this).attr("data-sec-id"));
+                            $("#sectionbtn li").removeClass('active');
+                            $(this).addClass('active');
+                            changeCurrSection(btnId);
+                        });
+                    });
+                }
+
+        });
+
+    </script>
+    <style type="text/css">
+        body{
+            background:#f5f5f6;
+            margin-top:20px;
+        }
+        /*Faq*/
+
+        .faq-search-wrap {
+            padding: 50px 0 60px;
+        }
+
+        .faq-search-wrap .form-group .form-control,
+        .faq-search-wrap .form-group .dd-handle {
+            border-top-right-radius: .25rem;
+            border-bottom-right-radius: .25rem;
+        }
+
+        .faq-search-wrap .form-group .input-group-append {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .faq-search-wrap .form-group .input-group-append .input-group-text {
+            background: transparent;
+            border: none;
+        }
+
+        .faq-search-wrap .form-group .input-group-append .input-group-text .feather-icon > svg {
+            height: 18px;
+            width: 18px;
+        }
+        .bg-teal-light-3 {
+            background-color: #7fcdc1 !important;
+        }
+
+        .hk-row {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -10px;
+            margin-left: -10px;
+        }
+
+        @@media (min-width: 576px){
+            .mt-sm-60 {
+                margin-top: 60px !important;
+            }
+        }
+        .mt-30 {
+            margin-top: 30px !important;
+        }
+
+        .list-group-item.active {
+            background-color: #00acf0;
+            border-color: #00acf0;
+        }
+        .accordion .card .card-header.activestate {
+            border-width: 1px;
+        }
+        .accordion .card .card-header {
+            padding: 0;
+            border-width: 0;
+        }
+        .card.card-lg .card-header, .card.card-lg .card-footer {
+            padding: .9rem 1.5rem;
+        }
+        .accordion>.card .card-header {
+            margin-bottom: -1px;
+        }
+        .card .card-header {
+            background: transparent;
+            border: none;
+        }
+        .accordion.accordion-type-2 .card .card-header > a.collapsed {
+            color: #324148;
+        }
+        .accordion .card:first-of-type .card-header:first-child > a {
+            border-top-left-radius: calc(.25rem - 1px);
+            border-top-right-radius: calc(.25rem - 1px);
+        }
+        .accordion.accordion-type-2 .card .card-header > a {
+            background: transparent;
+            color: #00acf0;
+            padding-left: 50px;
+        }
+        .accordion .card .card-header > a.collapsed {
+            color: #324148;
+            background: transparent;
+        }
+        .accordion .card .card-header > a {
+            background: #00acf0;
+            color: #fff;
+            font-weight: 500;
+            padding: .75rem 1.25rem;
+            display: block;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            -webkit-transition: all 0.2s ease-in-out;
+            -moz-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+        a {
+            text-decoration: none;
+            color: #00acf0;
+            -webkit-transition: color 0.2s ease;
+            -moz-transition: color 0.2s ease;
+            transition: color 0.2s ease;
+        }
+
+
+        .badge.badge-pill {
+            border-radius: 50px;
+        }
+        .badge.badge-light {
+            background: #eaecec;
+            color: #324148;
+        }
+        .badge {
+            font-weight: 500;
+            border-radius: 4px;
+            padding: 5px 7px;
+            font-size: 72%;
+            letter-spacing: 0.3px;
+            vertical-align: middle;
+            display: inline-block;
+            text-align: center;
+            text-transform: capitalize;
+        }
+        .ml-15 {
+            margin-left: 15px !important;
+        }
+
+        .accordion.accordion-type-2 .card .card-header > a.collapsed:after {
+            content: "\f158";
+        }
+
+        .accordion.accordion-type-2 .card .card-header > a::after {
+            display: inline-block;
+            font: normal normal normal 14px/1 'Ionicons';
+            speak: none;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: auto;
+            position: absolute;
+            content: "\f176";
+            font-size: 21px;
+            top: 15px;
+            left: 20px;
+        }
+
+        .mr-15 {
+            margin-right: 15px !important;
+        }
+
+    </style>
+</body>
