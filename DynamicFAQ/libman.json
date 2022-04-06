@@ -10,6 +10,11 @@
       "provider": "filesystem",
       "library": "wwwroot/jqsl/",
       "destination": "wwwroot/jqsl/"
+    },
+    {
+      "provider": "filesystem",
+      "library": "wwwroot/selectjq/",
+      "destination": "wwwroot/selectjq/"
     }
   ]
 }

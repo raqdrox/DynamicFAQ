@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 <body>
@@ -29,24 +31,16 @@
                                 <!-- search -->
                                 <div class="container">
                                     <h2>Users:</h2>
-                                    <input type="text" id="search" placeholder="Search...">
+                                        <input class="form-control form-control-lg filled-input bg-white" placeholder="Search by keywords" type="text" id="search">
 
-                                    <div class="clear"></div>
+                                        <select hidden=true id="SearchResults" class="select2-selection select2-selection--multiple form-control form-control-lg filled-input bg-white layered  " name="states[]" multiple="multiple"></select>
 
-                                    <div id="template" class="ques-card">
-                                        <div class="ques-info">
-                                            <h4 class="questions"></h4>
-                                        </div>
-                                    </div>
+                                            <div class="clear"></div>
 
-                                    <p class="not-found">
-                                        No ques found...
-                                    </p>
+                                            
 
-                                    <section class="questions">
-
-                                    </section>
-                                </div>
+                                            <section class="questions"></section>
+</div>
                                 <!-- ----------- -->
                             </div>
                         </div>
@@ -95,16 +89,21 @@
         </div>
     </script>
 
-    <script id="btntmpl" type="text/x-handlebars-template">
+<script id="btntmpl" type="text/x-handlebars-template">
         <li id="QAsectionBtn{{id}}" data-sec-id={{id}} class="list-group-item d-flex align-items-center">
             <i class="ion ion-md-sunny mr-15" data-sec-id={{id}}></i>{{sec}}
         </li>
     </script>
+
+<script id="srttmpl" type="text/x-handlebars-template">
+    <option class="quescard layered" data-ques-id={{qid}} data-sec-id={{sid}}>{{ques}} </option>
+</script>
     <script type="text/javascript">
             var sectionArray = @Html.Raw(Json.Serialize(@Model.ToList()));
             var currentSectionId = 0;
             var qatmpl = Handlebars.compile(document.getElementById('qatmpl').innerHTML);
             var btntmpl = Handlebars.compile(document.getElementById('btntmpl').innerHTML);
+            var srttmpl = Handlebars.compile(document.getElementById('srttmpl').innerHTML);
 
             function changeCurrSection(secId) {
 
@@ -113,8 +112,13 @@
             }
             function openQuestionInCurrSection(qId) {
 
-                var ques = $("#qaContainer").children("#accordion_2").find('.card[data-qid=' + qId.toString() + ']');
+                var ques = $("#qaContainer").children("#accordion_2").find('[data-qid="' + qId.toString() + '"]').find(".card-header").find(".collapsed").click();//Fix ---------------------------------
+                //---------------------------------------------------------------------------------------
+                //---------------------------------------------------------------------------------------
+                //---------------------------------------------------------------------------------------
+                //---------------------------------------------------------------------------------------
                 console.log(ques);
+                ques.click();
             }
             function refreshFaqContainer() {
                 var currSec = sectionArray[currentSectionId];
@@ -158,13 +162,15 @@
             $(document).ready(function () {
                 setupSectionButtons();
                 refreshFaqContainer();
+                
             });
 
 
 
             $(function() {
-                $("#search").on("keyup", function() {
-                    $(".questions").html("");
+                $("#search").on("keyup", function () {
+                    $("#SearchResults").empty();
+                    $("#SearchResults").attr("hidden", true);
                     var val = $.trim(this.value);
                     if (val) {
                         val = val.toLowerCase();
@@ -174,21 +180,33 @@
                                     function(_, obj) {
                                         // console.log(val,obj.name.toLowerCase().indexOf(val),obj)
                                         if (obj.question.toLowerCase().indexOf(val) != -1) {
-                                            $(".questions").append('<div class="ques-card" data-ques-id=' + obj.id + ' data-sec-id=' + getSectionIdFromQuesId(parseInt(obj.id)) + '><span class="ques-info">' + obj.question + '</span></div>');
+                                            $("#SearchResults").append(srttmpl({
+                                                qid:obj.id,
+                                                sid: getSectionIdFromQuesId(parseInt(obj.id)),
+                                                ques: obj.question
+                                        }));
+                                            $("#SearchResults").attr("hidden",false);
                                         }
                                     });
+                                
+
                             });
-                    }
-                    $(".questions").children(".ques-card").click(function() {
+                        
+                    } 
+                    $("#SearchResults").children("option").click(function() {
                         var sec = $(this).attr("data-sec-id");
                         var ques = $(this).attr("data-ques-id");
 
                         console.log(ques, sec);
-                        changeCurrSection(sec);
+
+                        $("#sectionbtn").children('[data-sec-id="' + sec.toString() + '"]').click();
+                        $("#search").value = '';
+                        $("#SearchResults").empty();
+                        $("#SearchResults").attr("hidden", true);
                         openQuestionInCurrSection(ques);
 
+
                     });
-                    $(".not-found").toggle($(".questions").find("span").length==0);
                 });
             });
             function getSectionIdFromQuesId(id) {
@@ -202,38 +220,7 @@
                 return "notfound";
         }
 
-            var typingTimer;
-            var doneTypingInterval = 1000; // Trigger the request 1 second/1000 ms after user done typing.
-            var input = $('#input'); // Your input
 
-            input.on('keyup', function () {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(doneTyping, doneTypingInterval);
-            });
-
-            input.on('keydown', function () {
-                clearTimeout(typingTimer);
-            });
-
-// user is done, send ajax request.
-            function doneTyping () {
-                var searchValue = $('#search').val();
-
-                if(searchValue !== ''){
-                    $.ajax({
-                        type: 'GET',
-                        url: '../controller/searchItem.php',
-                        data: 'data=' + encodeURIComponent(searchValue),
-                        success: function(data){
-                            if(data !== ""){
-                                $('#results').append(data);
-                            }else{
-                                document.getElementById('results').innerHTML = "<div style='font-size: 20px; text-align: center; margin-top: 10px'><p>Oups, ce que vous cherchez n'existe pas encore !</p></div>";
-                            }
-                        }
-                    })
-                }
-            }
     </script>
 <style type="text/css">
     
@@ -443,16 +430,14 @@
     }
 
     .ques-card {
-        flex: 0 0 auto;
-        flex-basis: 140px;
-        margin: 5px;
+
         padding: 5px;
         text-align: center;
         border: 1px solid #eee;
         border-radius: 5px;
     }
 
-
+    
 
     .ques-info {
         margin-top: 10px;
@@ -464,6 +449,18 @@
 
     #template {
         display: none;
+    }
+    .layered {
+        display: grid;
+
+        justify-items: start;
+
+        align-items: start;
+    }
+
+    .layered > * {
+        grid-column-start: 1;
+        grid-row-start: 1;
     }
 </style>
 </body>
