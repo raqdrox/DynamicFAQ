@@ -33,9 +33,9 @@
 
                                     <div class="clear"></div>
 
-                                    <div id="template" class="qa-card">
-                                        <div class="user-info">
-                                            <h4 class="ques"></h4>
+                                    <div id="template" class="ques-card">
+                                        <div class="ques-info">
+                                            <h4 class="questions"></h4>
                                         </div>
                                     </div>
 
@@ -85,7 +85,7 @@
     </div>
 
     <script id="qatmpl" type="text/x-handlebars-template">
-        <div class="card">
+        <div class="card" data-qid="{{id}}">
             <div class="card-header d-flex justify-content-between">
                 <a class="collapsed" role="button" data-toggle="collapse" href="#collapse_{{id}}i" aria-expanded="false">{{ques}}</a>
             </div>
@@ -111,7 +111,11 @@
                 currentSectionId = parseInt(secId);
                 refreshFaqContainer();
             }
+            function openQuestionInCurrSection(qId) {
 
+                var ques = $("#qaContainer").children("#accordion_2").find('.card[data-qid=' + qId.toString() + ']');
+                console.log(ques);
+            }
             function refreshFaqContainer() {
                 var currSec = sectionArray[currentSectionId];
 
@@ -170,20 +174,64 @@
                                     function(_, obj) {
                                         // console.log(val,obj.name.toLowerCase().indexOf(val),obj)
                                         if (obj.question.toLowerCase().indexOf(val) != -1) {
-                                            $(".questions").append('<div class="ques-card" data-quesid=' + obj.id + ' data-secid=' + getSectionIdFromQuesId(parseInt(obj.id)) + '><span class="ques-info">' + obj.question + '</span></div>');
+                                            $(".questions").append('<div class="ques-card" data-ques-id=' + obj.id + ' data-sec-id=' + getSectionIdFromQuesId(parseInt(obj.id)) + '><span class="ques-info">' + obj.question + '</span></div>');
                                         }
                                     });
                             });
                     }
+                    $(".questions").children(".ques-card").click(function() {
+                        var sec = $(this).attr("data-sec-id");
+                        var ques = $(this).attr("data-ques-id");
+
+                        console.log(ques, sec);
+                        changeCurrSection(sec);
+                        openQuestionInCurrSection(ques);
+
+                    });
                     $(".not-found").toggle($(".questions").find("span").length==0);
                 });
             });
             function getSectionIdFromQuesId(id) {
-                for (var sec in sectionArray) {
-                    for (var qa in sec.data) {
-                        if (qa.id === id)
-                        {return sec.id;}
+                for (var i = 0; i < sectionArray.length; i++) {
+                    for (var j = 0; j < sectionArray[i].data.length; j++) {
+                        if (sectionArray[i].data[j].id == id) {
+                            return i;
+                        }
                     }
+                }
+                return "notfound";
+        }
+
+            var typingTimer;
+            var doneTypingInterval = 1000; // Trigger the request 1 second/1000 ms after user done typing.
+            var input = $('#input'); // Your input
+
+            input.on('keyup', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            });
+
+            input.on('keydown', function () {
+                clearTimeout(typingTimer);
+            });
+
+// user is done, send ajax request.
+            function doneTyping () {
+                var searchValue = $('#search').val();
+
+                if(searchValue !== ''){
+                    $.ajax({
+                        type: 'GET',
+                        url: '../controller/searchItem.php',
+                        data: 'data=' + encodeURIComponent(searchValue),
+                        success: function(data){
+                            if(data !== ""){
+                                $('#results').append(data);
+                            }else{
+                                document.getElementById('results').innerHTML = "<div style='font-size: 20px; text-align: center; margin-top: 10px'><p>Oups, ce que vous cherchez n'existe pas encore !</p></div>";
+                            }
+                        }
+                    })
                 }
             }
     </script>
