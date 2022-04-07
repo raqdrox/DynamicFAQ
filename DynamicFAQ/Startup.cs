@@ -67,7 +67,7 @@ namespace DynamicFAQ
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=FaqUser}/{action=Index}/{id?}");
+                    template: "{controller=NewFaqUser}/{action=Index}/{id?}");
             });
         }
     }
