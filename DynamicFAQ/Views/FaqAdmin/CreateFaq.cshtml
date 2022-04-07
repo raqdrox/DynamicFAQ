@@ -1,30 +1,29 @@
-﻿@model DynamicFAQ.Models.QuestionAnswer
+﻿@model QuestionAnswer
 
 @{
-    ViewData["Title"] = "EditFaq";
+    ViewData["Title"] = "CreateFaq";
 }
 
-<h2>Edit</h2>
+<h2>Create</h2>
 
-<h4>Section</h4>
-<hr />
+<h4>QuestionAnswer</h4>
+<hr/>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditFaq">
+        <form asp-action="CreateFaq">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Question" class="control-label"></label>
-                <input asp-for="Question" class="form-control" />
+                <input asp-for="Question" class="form-control"/>
                 <span asp-validation-for="Question" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Answer" class="control-label"></label>
-                <input asp-for="Answer" class="form-control" />
+                <textarea asp-for="Answer" text-wrap:normal class="form-control"></textarea>
                 <span asp-validation-for="Answer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default"/>
             </div>
         </form>
     </div>
@@ -35,5 +34,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

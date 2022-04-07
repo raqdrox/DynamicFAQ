@@ -2,8 +2,8 @@
 
 @{
     ViewData["Title"] = "Index";
-    ViewData["DataModel"] = Html.Raw(Json.Serialize(Model.ToList()));
 }
+
 
 <head>
     <meta charset="utf-8">
@@ -28,7 +28,7 @@
         <div class="col-xl-12 pa-0">
             <div class="faq-search-wrap bg-grey-light-3">
                 <div class="container">
-                    <h1 class="display-5 text-white mb-20">Frequently Asked Questions</h1>
+                    <h1 class="display-5 text-white mb-20">FAQ Admin</h1>
                     <div class="form-group w-100 mb-0">
                         <div class="input-group">
 
@@ -52,6 +52,11 @@
                             <h6 class="card-header">
                                 Category
                             </h6>
+                            <p>
+                                <h6 class="">
+                                    <a asp-action="CreateSection">Create New Section</a>
+                                </h6>
+                            </p>
                             <ul class="list-group list-group-flush" id="sectionbtn">
                                 <!-- Sec Btn Container-->
                             </ul>
@@ -62,6 +67,17 @@
                             <h3 class="card-header border-bottom-0" id="sectionNameHead">
                                 <!-- Section Name-->
                             </h3>
+                            <div class="SectionOptions" id="SectionOptionLinks">
+                                <a asp-action="EditSection">
+                                    <h6>Edit Section</h6>
+                                </a>
+                                <a asp-action="DeleteSection">
+                                    <h6>Delete Section</h6>
+                                </a>
+                                <a asp-action="CreateFaq">
+                                    <h6>Add Faq in Section</h6>
+                                </a>
+                            </div>
                             <div id="qaContainer">
                                 <div class="accordion accordion-type-2 accordion-flush" id="accordion_2">
 
@@ -75,35 +91,50 @@
         </div>
     </div>
     <!-- /Row -->
-</div>
 
-<script id="qatmpl" type="text/x-handlebars-template">
-        <div class="card" data-qid="{{id}}" data-accordionid="{{ida}}">
-            <div class="card-header d-flex justify-content-between">
-                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse_{{id}}i" aria-expanded="false">{{ques}}</a>
-            </div>
-            <div id="collapse_{{id}}i" class="collapse" data-parent="#accordion_2">
-                <div class="card-body pa-15">{{ans}}</div>
-            </div>
+</div>
+<div class="hidden" id="template">
+    <a asp-action="DeleteFaq" id="delFaqLink">
+        <h6>Delete Faq</h6>
+    </a>
+    <a asp-action="EditFaq" id="editFaqLink">
+        <h6>Edit Faq</h6>
+    </a>
+</div>
+<script id="qotmpl" type="text/x-handlebars-template">
+        <div class="QOptions" data-qid="{{qid}}">
+            <a id="delFaqLink"><h6>Delete Faq</h6></a>
+            <a id="editFaqLink"><h6>Edit Faq</h6></a>
         </div>
     </script>
+<script id="qatmpl" type="text/x-handlebars-template">
+            <div class="card" data-qid="{{id}}" data-accordionid="{{ida}}">
+                <div class="card-header d-flex justify-content-between">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse_{{id}}i" aria-expanded="false">{{ques}}</a>
+                </div>
+                <div id="collapse_{{id}}i" class="collapse" data-parent="#accordion_2">
+                    <div class="card-body pa-15">{{ans}}</div>
+                </div>
+            </div>
+
+        </script>
 
 <script id="btntmpl" type="text/x-handlebars-template">
         <li id="QAsectionBtn{{id}}" data-sec-id={{id}} class="list-group-item d-flex align-items-center">
             <i class="ion ion-md-sunny mr-15" data-sec-id={{id}}></i>{{sec}}
         </li>
-    </script>
+        </script>
 
 <script id="srttmpl" type="text/x-handlebars-template">
-    <option class="quescard layered" data-ques-id={{qid}} data-sec-id={{sid}}>{{ques}} </option>
-</script>
+            <option class="quescard layered" data-ques-id={{qid}} data-sec-id={{sid}}>{{ques}} </option>
+        </script>
 <script type="text/javascript">
     var sectionArray = @Html.Raw(Json.Serialize(Model.ToList()));
-
     var currentSectionId = 0;
     var qatmpl = Handlebars.compile(document.getElementById('qatmpl').innerHTML);
     var btntmpl = Handlebars.compile(document.getElementById('btntmpl').innerHTML);
     var srttmpl = Handlebars.compile(document.getElementById('srttmpl').innerHTML);
+    var qotmpl = Handlebars.compile(document.getElementById('qotmpl').innerHTML);
 
     function changeCurrSection(secId) {
 
@@ -123,6 +154,21 @@
         var containerPGroup = $("#qaContainer").children("#accordion_2");
         $("#sectionNameHead").empty();
         $("#sectionNameHead").append(currSec.name);
+
+        $("#SectionOptionLinks").children("a[href]").each(function() {
+            var link;
+            if ($(this).is("[data-orig-link]")) {
+                link = $(this).attr("data-orig-link");
+
+            } else {
+                link = $(this).attr("href");
+
+                $(this).attr("data-orig-link", link);
+            }
+            var newLink = link + "/" + currSec.id.toString();
+            $(this).attr("href", newLink);
+        });
+
         containerPGroup.empty();
         for (var i = 0; i < currSec.data.length; i++) {
             containerPGroup.append(qatmpl({
@@ -131,6 +177,27 @@
                 ans: currSec.data[i].answer,
                 id: currSec.data[i].id
             }));
+            var qo = qotmpl({
+                qid: currSec.data[i].id
+            });
+            var dellink = $('#template').children('#delFaqLink').attr('href');
+            var edlink = $('#template').children('#editFaqLink').attr('href');
+            containerPGroup.children().eq(i).append(qo);
+            var qoi = containerPGroup.children().eq(i).find('.QOptions');
+            $(qoi).children("#delFaqLink").attr('href', dellink);
+            console.log($(qoi).children("#delFaqLink").is('[href]'));
+            $(qoi).children("#editFaqLink").attr('href', edlink);
+            $(qoi).children("a").each(function() {
+                var link;
+                if ($(this).is("[data-orig-link]")) {
+                    link = $(this).attr("data-orig-link");
+                } else {
+                    link = $(this).attr("href");
+                    $(this).attr("data-orig-link", link);
+                }
+                var newLink = link + "/" + currSec.data[i].id.toString();
+                $(this).attr("href", newLink);
+            });;
         }
     }
 
@@ -219,5 +286,9 @@
     }
 
 </script>
+<style type="text/css">
+    .QOptions { }
 
+    .SectionOptions { }
+</style>
 </body>

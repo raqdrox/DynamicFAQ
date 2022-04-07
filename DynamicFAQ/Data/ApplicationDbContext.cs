@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DynamicFAQ.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using DynamicFAQ.Models;
 
 namespace DynamicFAQ.Data
 {
@@ -13,7 +10,8 @@ namespace DynamicFAQ.Data
             : base(options)
         {
         }
-        public DbSet<DynamicFAQ.Models.Section> Section { get; set; }
-        public DbSet<DynamicFAQ.Models.QuestionAnswer> QuestionAnswer { get; set; }
+
+        public DbSet<Section> Section { get; set; }
+        public DbSet<QuestionAnswer> QuestionAnswer { get; set; }
     }
 }

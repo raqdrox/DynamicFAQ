@@ -29,12 +29,12 @@
 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="NewFaqUser" asp-action="Index">FAQ</a>
+                        <a class="nav-link" asp-area="" asp-controller="FaqUser" asp-action="Index">FAQ</a>
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Faq" asp-action="Index">FAQ Admin</a>
+                            <a class="nav-link" asp-area="" asp-controller="FaqAdmin" asp-action="Index">FAQ Admin</a>
                         </li>
                     }
 

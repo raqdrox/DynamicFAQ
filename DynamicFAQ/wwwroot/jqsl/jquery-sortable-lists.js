@@ -4,140 +4,131 @@
  * @license MIT
  */
 
-( function( $ )
-{
+(function($) {
 
     /**
      * @desc jQuery plugin
      * @param options
      * @returns this to unsure chaining
      */
-    $.fn.sortableLists = function( options )
-    {
+    $.fn.sortableLists = function(options) {
         // Local variables. This scope is available for all the functions in this closure.
-        var jQBody = $( 'body' ).css( 'position', 'relative' ),
+        var jQBody = $("body").css("position", "relative"),
 
             defaults = {
-                currElClass: '',
-                placeholderClass: '',
+                currElClass: "",
+                placeholderClass: "",
                 placeholderCss: {
-                    'position': 'relative',
+                    'position': "relative",
                     'padding': 0
                 },
-                hintClass: '',
+                hintClass: "",
                 hintCss: {
-                    'display': 'none',
-                    'position': 'relative',
+                    'display': "none",
+                    'position': "relative",
                     'padding': 0
                 },
-                hintWrapperClass: '',
-                hintWrapperCss: { /* Description is below the defaults in this var section */ },
-                baseClass: '',
+                hintWrapperClass: "",
+                hintWrapperCss: { /* Description is below the defaults in this var section */  },
+                baseClass: "",
                 baseCss: {
-                    'position': 'absolute',
-                    'top': 0 - parseInt( jQBody.css( 'margin-top' ) ),
-                    'left': 0 - parseInt( jQBody.css( 'margin-left' ) ),
+                    'position': "absolute",
+                    'top': 0 - parseInt(jQBody.css("margin-top")),
+                    'left': 0 - parseInt(jQBody.css("margin-left")),
                     'margin': 0,
                     'padding': 0,
                     'z-index': 2500
                 },
                 opener: {
                     active: false,
-                    open: '',
-                    close: '',
+                    open: "",
+                    close: "",
                     openerCss: {
-                        'float': 'left',
-                        'display': 'inline-block',
-                        'background-position': 'center center',
-                        'background-repeat': 'no-repeat'
+                        'float': "left",
+                        'display': "inline-block",
+                        'background-position': "center center",
+                        'background-repeat': "no-repeat"
                     },
-                    openerClass: ''
+                    openerClass: ""
                 },
                 maxLevels: false,
-                listSelector: 'ul',
-                listsClass: '', // Used for hintWrapper and baseElement
+                listSelector: "ul",
+                listsClass: "", // Used for hintWrapper and baseElement
                 listsCss: {},
                 insertZone: 50,
                 insertZonePlus: false,
                 scroll: 20,
-                ignoreClass: '',
-                isAllowed: function( cEl, hint, target ) { return true; },  // Params: current el., hint el.
-                onDragStart: function( e, cEl ) { return true; },  // Params: e jQ. event obj., current el.
-                onChange: function( cEl ) { return true; },  // Params: current el.
-                complete: function( cEl ) { return true; }  // Params: current el.
+                ignoreClass: "",
+                isAllowed: function(cEl, hint, target) { return true; }, // Params: current el., hint el.
+                onDragStart: function(e, cEl) { return true; }, // Params: e jQ. event obj., current el.
+                onChange: function(cEl) { return true; }, // Params: current el.
+                complete: function(cEl) { return true; } // Params: current el.
             },
 
-            setting = $.extend( true, {}, defaults, options ),
+            setting = $.extend(true, {}, defaults, options),
 
             // base element from which is counted position of draged element
-            base = $( '<' + setting.listSelector + ' />' )
-                .prependTo( jQBody )
-                .attr( 'id', 's-l-base' )
-                .css( setting.baseCss )
-                .addClass( setting.listsClass + ' ' + setting.baseClass ),
+            base = $("<" + setting.listSelector + " />")
+                .prependTo(jQBody)
+                .attr("id", "s-l-base")
+                .css(setting.baseCss)
+                .addClass(setting.listsClass + " " + setting.baseClass),
 
             // placeholder != state.placeholderNode
             // placeholder is document fragment and state.placeholderNode is document node
-            placeholder = $( '<li />' )
-                .attr( 'id', 's-l-placeholder' )
-                .css( setting.placeholderCss )
-                .addClass( setting.placeholderClass ),
+            placeholder = $("<li />")
+                .attr("id", "s-l-placeholder")
+                .css(setting.placeholderCss)
+                .addClass(setting.placeholderClass),
 
             // hint is document fragment
-            hint = $( '<li />' )
-                .attr( 'id', 's-l-hint' )
-                .css( setting.hintCss )
-                .addClass( setting.hintClass ),
+            hint = $("<li />")
+                .attr("id", "s-l-hint")
+                .css(setting.hintCss)
+                .addClass(setting.hintClass),
 
             // Is document fragment used as wrapper if hint is inserted to the empty li
-            hintWrapper = $( '<' + setting.listSelector + ' />' )
-                .attr( 'id', 's-l-hint-wrapper' )
-                .addClass( setting.listsClass + ' ' + setting.hintWrapperClass )
-                .css( setting.listsCss )
-                .css( setting.hintWrapperCss ),
+            hintWrapper = $("<" + setting.listSelector + " />")
+                .attr("id", "s-l-hint-wrapper")
+                .addClass(setting.listsClass + " " + setting.hintWrapperClass)
+                .css(setting.listsCss)
+                .css(setting.hintWrapperCss),
 
             // Is +/- ikon to open/close nested lists
-            opener = $( '<span />' )
-                .addClass( 's-l-opener ' + setting.opener.openerClass )
-                .css( setting.opener.openerCss )
-                .on( 'mousedown', function( e )
-                {
-                    var li = $( this ).closest( 'li' );
+            opener = $("<span />")
+                .addClass("s-l-opener " + setting.opener.openerClass)
+                .css(setting.opener.openerCss)
+                .on("mousedown",
+                    function(e) {
+                        var li = $(this).closest("li");
 
-                    if ( li.hasClass( 's-l-closed' ) )
-                    {
-                        open( li );
-                    }
-                    else
-                    {
-                        close( li );
-                    }
+                        if (li.hasClass("s-l-closed")) {
+                            open(li);
+                        } else {
+                            close(li);
+                        }
 
-                    return false; // Prevent default
-                } );
+                        return false; // Prevent default
+                    });
 
-        if ( setting.opener.as == 'class' )
-        {
-            opener.addClass( setting.opener.close );
-        }
-        else if ( setting.opener.as == 'html' )
-        {
-            opener.html( setting.opener.close );
-        }
-        else
-        {
-            console.error( 'jQuerySortableLists opener as background image has been removed with release 2.0.0. Use html instead please.' );
+        if (setting.opener.as == "class") {
+            opener.addClass(setting.opener.close);
+        } else if (setting.opener.as == "html") {
+            opener.html(setting.opener.close);
+        } else {
+            console.error(
+                "jQuerySortableLists opener as background image has been removed with release 2.0.0. Use html instead please.");
         }
 
         // Container with all actual elements and parameters
         var state = {
             isDragged: false,
-            isRelEFP: null,  // How browser counts elementFromPoint() position (relative to window/document)
+            isRelEFP: null, // How browser counts elementFromPoint() position (relative to window/document)
             oEl: null, // overElement is element which returns elementFromPoint() method
             rootEl: {
-                el: $( this ),
+                el: $(this),
                 offset: null,
-                rootElClass: $( this ).attr( 'class' )
+                rootElClass: $(this).attr("class")
             },
             cEl: null, // currentElement is currently dragged element
             placeholderParentLi: null,
@@ -149,67 +140,63 @@
             cY: 0,
             isAllowed: true, // The function is defined in setting
             e: { pageX: 0, pageY: 0, clientX: 0, clientY: 0 }, // TODO: unused??
-            doc: $( document ),
-            win: $( window )
+            doc: $(document),
+            win: $(window)
         };
 
-        if ( setting.opener.active )
-        {
-            if ( ! setting.opener.open ) throw 'Opener.open value is not defined. It should be valid url, html or css class.';
-            if ( ! setting.opener.close ) throw 'Opener.close value is not defined. It should be valid url, html or css class.';
+        if (setting.opener.active) {
+            if (! setting.opener.open)
+                throw "Opener.open value is not defined. It should be valid url, html or css class.";
+            if (! setting.opener.close)
+                throw "Opener.close value is not defined. It should be valid url, html or css class.";
 
-            $( this ).find( 'li' ).each( function()
-            {
-                var li = $( this );
+            $(this).find("li").each(function() {
+                var li = $(this);
 
-                if ( li.children( setting.listSelector ).length )
-                {
-                    opener.clone( true ).prependTo( li.children( 'div' ).first() );
+                if (li.children(setting.listSelector).length) {
+                    opener.clone(true).prependTo(li.children("div").first());
 
-                    if ( ! li.hasClass( 's-l-open' ) )
-                    {
-                        close( li );
-                    }
-                    else
-                    {
-                        open( li );
+                    if (! li.hasClass("s-l-open")) {
+                        close(li);
+                    } else {
+                        open(li);
                     }
                 }
-            } );
+            });
         }
 
-        if( setting.maxLevels !== false )
-        {
-            if( isNaN( setting.maxLevels ) ) throw 'JQuery-sortable-lists maxLevels values is not a number';
+        if (setting.maxLevels !== false) {
+            if (isNaN(setting.maxLevels)) throw "JQuery-sortable-lists maxLevels values is not a number";
 
-            $( this ).find( 'li' ).each( function()
-            {
-                var insideLevs = getInsideLevels( $(this) );
-                var upperLevs = getUpperLevels( $(this) );
-                setInsideLevels( $(this), insideLevs );
-                setUpperLevels( $(this), upperLevs );
+            $(this).find("li").each(function() {
+                var insideLevs = getInsideLevels($(this));
+                var upperLevs = getUpperLevels($(this));
+                setInsideLevels($(this), insideLevs);
+                setUpperLevels($(this), upperLevs);
             });
         }
 
         // Return this ensures chaining
-        return this.on( 'mousedown', function( e )
-            {
-                var target = $( e.target );
+        return this.on("mousedown",
+            function(e) {
+                var target = $(e.target);
 
-                if ( state.isDragged !== false || ( setting.ignoreClass && target.closest( '.' + setting.ignoreClass ).length ) ) return; // setting.ignoreClass is checked cause hasClass('') returns true
+                if (state.isDragged !== false ||
+                (setting.ignoreClass &&
+                    target.closest("." + setting.ignoreClass)
+                    .length)) return; // setting.ignoreClass is checked cause hasClass('') returns true
 
                 // Solves selection/range highlighting
                 e.preventDefault();
 
                 // El must be li in jQuery object
-                var el = target.closest( 'li' ),
-                    rEl = $( this );
+                var el = target.closest("li"),
+                    rEl = $(this);
 
                 // Check if el is not empty
-                if ( el[0] )
-                {
-                    setting.onDragStart( e, el );
-                    startDrag( e, el, rEl );
+                if (el[0]) {
+                    setting.onDragStart(e, el);
+                    startDrag(e, el, rEl);
                 }
             }
         );
@@ -220,122 +207,112 @@
          * @param el curr. dragged element
          * @param rEl root element
          */
-        function startDrag( e, el, rEl )
-        {
+        function startDrag(e, el, rEl) {
             state.isDragged = true;
 
-            var elMT = parseInt( el.css( 'margin-top' ) ), // parseInt is necesary cause value has px at the end
-                elMB = parseInt( el.css( 'margin-bottom' ) ),
-                elML = parseInt( el.css( 'margin-left' ) ),
-                elMR = parseInt( el.css( 'margin-right' ) ),
+            var elMT = parseInt(el.css("margin-top")), // parseInt is necesary cause value has px at the end
+                elMB = parseInt(el.css("margin-bottom")),
+                elML = parseInt(el.css("margin-left")),
+                elMR = parseInt(el.css("margin-right")),
                 elXY = el.offset(),
                 elIH = el.innerHeight();
 
             state.rootEl = {
                 el: rEl,
                 offset: rEl.offset(),
-                rootElClass: rEl.attr( 'class' )
+                rootElClass: rEl.attr("class")
             };
 
             state.cEl = {
                 el: el,
-                mT: elMT, mL: elML, mB: elMB, mR: elMR,
+                mT: elMT,
+                mL: elML,
+                mB: elMB,
+                mR: elMR,
                 offset: elXY
             };
 
             state.cEl.xyOffsetDiff = { X: e.pageX - state.cEl.offset.left, Y: e.pageY - state.cEl.offset.top };
-            state.cEl.el.addClass( 's-l-current ' + setting.currElClass );
+            state.cEl.el.addClass("s-l-current " + setting.currElClass);
 
-            el.before( placeholder );  // Now document has node placeholder
+            el.before(placeholder); // Now document has node placeholder
 
-            var placeholderNode = state.placeholderNode = $( '#s-l-placeholder' );  // jQuery object && document node
+            var placeholderNode = state.placeholderNode = $("#s-l-placeholder"); // jQuery object && document node
 
-            el.css( {
+            el.css({
                 'width': el.width(),
-                'position': 'absolute',
+                'position': "absolute",
                 'top': elXY.top - elMT,
                 'left': elXY.left - elML
-            } ).prependTo( base );
+            }).prependTo(base);
 
-            placeholderNode.css( {
-                'display': 'block',
+            placeholderNode.css({
+                'display': "block",
                 'height': elIH
-            } );
+            });
 
-            hint.css( 'height', elIH );
+            hint.css("height", elIH);
 
             state.doc
-                .on( 'mousemove', dragging )
-                .on( 'mouseup', endDrag );
+                .on("mousemove", dragging)
+                .on("mouseup", endDrag);
         }
 
         /**
          * @desc Start dragging
          * @param e event obj.
          */
-        function dragging( e )
-        {
-            if ( state.isDragged )
-            {
+        function dragging(e) {
+            if (state.isDragged) {
                 var cEl = state.cEl,
                     doc = state.doc,
                     win = state.win;
 
                 // event triggered by trigger() from setInterval does not have XY properties
-                if ( ! e.pageX )
-                {
-                    setEventPos( e );
+                if (! e.pageX) {
+                    setEventPos(e);
                 }
 
                 // Scrolling up
-                if ( doc.scrollTop() > state.rootEl.offset.top - 10 && e.clientY < 50 )
-                {
-                    if ( ! state.upScroll ) // Has to be here after cond. e.clientY < 50 cause else unsets the interval
+                if (doc.scrollTop() > state.rootEl.offset.top - 10 && e.clientY < 50) {
+                    if (! state.upScroll) // Has to be here after cond. e.clientY < 50 cause else unsets the interval
                     {
-                        setScrollUp( e );
-                    }
-                    else
-                    {
+                        setScrollUp(e);
+                    } else {
                         e.pageY = e.pageY - setting.scroll;
-                        $( 'html, body' ).each( function( i )
-                        {
-                            $( this ).scrollTop( $( this ).scrollTop() - setting.scroll );
-                        } );
-                        setCursorPos( e );
+                        $("html, body").each(function(i) {
+                            $(this).scrollTop($(this).scrollTop() - setting.scroll);
+                        });
+                        setCursorPos(e);
                     }
                 }
                 // Scrolling down
-                else if ( doc.scrollTop() + win.height() < state.rootEl.offset.top + state.rootEl.el.outerHeight( false ) + 10 && win.height() - e.clientY < 50 )
-                {
-                    if ( ! state.downScroll )
-                    {
-                        setScrollDown( e );
-                    }
-                    else
-                    {
+                else if (doc.scrollTop() + win.height() <
+                    state.rootEl.offset.top + state.rootEl.el.outerHeight(false) + 10 &&
+                    win.height() - e.clientY < 50) {
+                    if (! state.downScroll) {
+                        setScrollDown(e);
+                    } else {
                         e.pageY = e.pageY + setting.scroll;
-                        $( 'html, body' ).each( function( i )
-                        {
-                            $( this ).scrollTop( $( this ).scrollTop() + setting.scroll );
-                        } );
-                        setCursorPos( e );
+                        $("html, body").each(function(i) {
+                            $(this).scrollTop($(this).scrollTop() + setting.scroll);
+                        });
+                        setCursorPos(e);
                     }
-                }
-                else
-                {
-                    scrollStop( state );
+                } else {
+                    scrollStop(state);
                 }
 
                 // Script needs to know old oEl
                 state.oElOld = state.oEl;
 
-                cEl.el[0].style.visibility = 'hidden';  // This is important for the next row
-                state.oEl = oEl = elFromPoint( e.pageX, e.pageY );
-                cEl.el[0].style.visibility = 'visible';
+                cEl.el[0].style.visibility = "hidden"; // This is important for the next row
+                state.oEl = oEl = elFromPoint(e.pageX, e.pageY);
+                cEl.el[0].style.visibility = "visible";
 
-                showHint( e, state );
+                showHint(e, state);
 
-                setCElPos( e, state );
+                setCElPos(e, state);
             }
         }
 
@@ -343,85 +320,81 @@
          * @desc endDrag unbinds events mousemove/mouseup and removes redundant elements
          * @param e
          */
-        function endDrag( e )
-        {
+        function endDrag(e) {
             var cEl = state.cEl,
-                hintNode = $( '#s-l-hint', state.rootEl.el ),
+                hintNode = $("#s-l-hint", state.rootEl.el),
                 hintStyle = hint[0].style,
                 targetEl = null, // hintNode/placeholderNode
                 isHintTarget = false, // if cEl will be placed to the hintNode
-                hintWrapperNode = $( '#s-l-hint-wrapper' );
+                hintWrapperNode = $("#s-l-hint-wrapper");
 
-            if ( hintStyle.display == 'block' && hintNode.length && state.isAllowed )
-            {
+            if (hintStyle.display == "block" && hintNode.length && state.isAllowed) {
                 targetEl = hintNode;
                 isHintTarget = true;
-            }
-            else
-            {
+            } else {
                 targetEl = state.placeholderNode;
                 isHintTarget = false;
             }
 
             offset = targetEl.offset();
 
-            cEl.el.animate( { left: offset.left - state.cEl.mL, top: offset.top - state.cEl.mT }, 250,
-                function()  // complete callback
+            cEl.el.animate({ left: offset.left - state.cEl.mL, top: offset.top - state.cEl.mT },
+                250,
+                function() // complete callback
                 {
-                    tidyCurrEl( cEl );
+                    tidyCurrEl(cEl);
 
-                    targetEl.after( cEl.el[0] );
-                    targetEl[0].style.display = 'none';
-                    hintStyle.display = 'none';
+                    targetEl.after(cEl.el[0]);
+                    targetEl[0].style.display = "none";
+                    hintStyle.display = "none";
                     // This has to be document node, not hint as a part of documentFragment.
                     hintNode.remove();
 
                     hintWrapperNode
-                        .removeAttr( 'id' )
-                        .removeClass( setting.hintWrapperClass );
+                        .removeAttr("id")
+                        .removeClass(setting.hintWrapperClass);
 
-                    if ( hintWrapperNode.length )
-                    {
-                        hintWrapperNode.prev( 'div' ).append( opener.clone( true ) );
+                    if (hintWrapperNode.length) {
+                        hintWrapperNode.prev("div").append(opener.clone(true));
                     }
 
                     // Directly removed placeholder looks bad. It jumps up if the hint is below.
-                    if ( isHintTarget )
-                    {
+                    if (isHintTarget) {
                         // !!! Do not use local var cause it seems it creates a closure variables lakes in Chrome !!!
-                        state.placeholderNode.slideUp( 150, function()
-                        {
-                            state.placeholderParentLi = ( ! state.placeholderNode.parent().is( state.rootEl.el ) ) ? state.placeholderNode.parent().closest( 'li' ) : null;
+                        state.placeholderNode.slideUp(150,
+                            function() {
+                                state.placeholderParentLi = (! state.placeholderNode.parent().is(state.rootEl.el))
+                                    ? state.placeholderNode.parent().closest("li")
+                                    : null;
 
-                            state.placeholderNode.remove();
-                            tidyEmptyLists();
+                                state.placeholderNode.remove();
+                                tidyEmptyLists();
 
-                            setting.onChange( cEl.el );
-                            setting.complete( cEl.el ); // Have to be here cause is necessary to remove placeholder before complete call.
-                            state.isDragged = false;
+                                setting.onChange(cEl.el);
+                                setting.complete(cEl
+                                    .el); // Have to be here cause is necessary to remove placeholder before complete call.
+                                state.isDragged = false;
 
-                            if( setting.maxLevels !== false )  // Has to be after placeholder remove.
-                            {
-                                recountLevels( cEl.el );
-                                if( state.placeholderParentLi ) recountLevels( state.placeholderParentLi );
-                            }
-                        });
-                    }
-                    else
-                    {
+                                if (setting.maxLevels !== false) // Has to be after placeholder remove.
+                                {
+                                    recountLevels(cEl.el);
+                                    if (state.placeholderParentLi) recountLevels(state.placeholderParentLi);
+                                }
+                            });
+                    } else {
                         state.placeholderNode.remove();
                         tidyEmptyLists();
-                        setting.complete( cEl.el );
+                        setting.complete(cEl.el);
                         state.isDragged = false;
                     }
 
-                } );
+                });
 
-            scrollStop( state );
+            scrollStop(state);
 
             state.doc
-                .unbind( "mousemove", dragging )
-                .unbind( "mouseup", endDrag );
+                .unbind("mousemove", dragging)
+                .unbind("mouseup", endDrag);
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,14 +408,13 @@
          * @param e
          * @return No value
          */
-        function setScrollUp( e )
-        {
-            if ( state.upScroll ) return;
+        function setScrollUp(e) {
+            if (state.upScroll) return;
 
-            state.upScroll = setInterval( function()
-            {
-                state.doc.trigger( 'mousemove' );
-            }, 50 );
+            state.upScroll = setInterval(function() {
+                    state.doc.trigger("mousemove");
+                },
+                50);
         }
 
         /**
@@ -450,14 +422,13 @@
          * @param e
          * @return No value
          */
-        function setScrollDown( e )
-        {
-            if ( state.downScroll ) return;
+        function setScrollDown(e) {
+            if (state.downScroll) return;
 
-            state.downScroll = setInterval( function()
-            {
-                state.doc.trigger( 'mousemove' );
-            }, 50 );
+            state.downScroll = setInterval(function() {
+                    state.doc.trigger("mousemove");
+                },
+                50);
         }
 
         /**
@@ -465,8 +436,7 @@
          * @param e
          * @return No value
          */
-        function setCursorPos( e )
-        {
+        function setCursorPos(e) {
             state.pY = e.pageY;
             state.pX = e.pageX;
             state.cY = e.clientY;
@@ -478,8 +448,7 @@
          * @param e
          * @return No value
          */
-        function setEventPos( e )
-        {
+        function setEventPos(e) {
             e.pageY = state.pY;
             e.pageX = state.pX;
             e.clientY = state.cY;
@@ -492,10 +461,9 @@
          * @param state
          * @return No value
          */
-        function scrollStop( state )
-        {
-            clearInterval( state.upScroll );
-            clearInterval( state.downScroll );
+        function scrollStop(state) {
+            clearInterval(state.upScroll);
+            clearInterval(state.downScroll);
             // clearInterval have to be before upScroll/downScroll is set to false
             state.upScroll = state.downScroll = false;
         }
@@ -509,14 +477,13 @@
          * @param state state object
          * @return No value
          */
-        function setCElPos( e, state )
-        {
+        function setCElPos(e, state) {
             var cEl = state.cEl;
 
-            cEl.el.css( {
+            cEl.el.css({
                 'top': e.pageY - cEl.xyOffsetDiff.Y - cEl.mT,
                 'left': e.pageX - cEl.xyOffsetDiff.X - cEl.mL
-            } );
+            });
         }
 
         /**
@@ -525,53 +492,45 @@
          * @param y e.pageY
          * @return null|jQuery object
          */
-        function elFromPoint( x, y )
-        {
-            if ( ! document.elementFromPoint ) return null;
+        function elFromPoint(x, y) {
+            if (! document.elementFromPoint) return null;
 
             // FF/IE/CH needs coordinates relative to the window, unlike
             // Opera/Safari which needs absolute coordinates of document in elementFromPoint()
             var isRelEFP = state.isRelEFP;
 
             // isRelative === null means it is not checked yet
-            if ( isRelEFP === null )
-            {
+            if (isRelEFP === null) {
                 var s, res;
-                if ( (s = state.doc.scrollTop()) > 0 )
-                {
-                    isRelEFP = ( (res = document.elementFromPoint( 0, s + $( window ).height() - 1 ) ) == null
-                    || res.tagName.toUpperCase() == 'HTML');  // IE8 returns html
+                if ((s = state.doc.scrollTop()) > 0) {
+                    isRelEFP = ((res = document.elementFromPoint(0, s + $(window).height() - 1)) == null ||
+                        res.tagName.toUpperCase() == "HTML"); // IE8 returns html
                 }
-                if ( (s = state.doc.scrollLeft()) > 0 )
-                {
-                    isRelEFP = ( (res = document.elementFromPoint( s + $( window ).width() - 1, 0 ) ) == null
-                    || res.tagName.toUpperCase() == 'HTML');  // IE8 returns html
+                if ((s = state.doc.scrollLeft()) > 0) {
+                    isRelEFP = ((res = document.elementFromPoint(s + $(window).width() - 1, 0)) == null ||
+                        res.tagName.toUpperCase() == "HTML"); // IE8 returns html
                 }
             }
 
-            if ( isRelEFP )
-            {
+            if (isRelEFP) {
                 x -= state.doc.scrollLeft();
                 y -= state.doc.scrollTop();
             }
 
             // Returns jQuery object
-            var el = $( document.elementFromPoint( x, y ) );
+            var el = $(document.elementFromPoint(x, y));
 
-            if ( ! state.rootEl.el.find( el ).length ) // el is outside the rootEl
+            if (! state.rootEl.el.find(el).length) // el is outside the rootEl
             {
                 return null;
-            }
-            else if ( el.is( '#s-l-placeholder' ) || el.is( '#s-l-hint' ) ) // el is #placeholder/#hint
+            } else if (el.is("#s-l-placeholder") || el.is("#s-l-hint")) // el is #placeholder/#hint
             {
                 return null;
-            }
-            else if ( ! el.is( 'li' ) ) // el is ul or div or something else in li elem.
+            } else if (! el.is("li")) // el is ul or div or something else in li elem.
             {
-                el = el.closest( 'li' );
+                el = el.closest("li");
                 return el[0] ? el : null;
-            }
-            else if ( el.is( 'li' ) ) // el is most wanted li
+            } else if (el.is("li")) // el is most wanted li
             {
                 return el;
             }
@@ -586,36 +545,30 @@
          * @param state
          * @return No value
          */
-        function showHint( e, state )
-        {
+        function showHint(e, state) {
             var oEl = state.oEl;
 
             // If oEl is null or if this is the first call in dragging
-            if ( ! oEl || ! state.oElOld )  return;
+            if (! oEl || ! state.oElOld) return;
 
-            var oElH = oEl.outerHeight( false ),
+            var oElH = oEl.outerHeight(false),
                 relY = e.pageY - oEl.offset().top;
 
-            if ( setting.insertZonePlus )
-            {
-                if ( 14 > relY )  // Inserting on top
+            if (setting.insertZonePlus) {
+                if (14 > relY) // Inserting on top
                 {
-                    showOnTopPlus( e, oEl, 7 > relY );  // Last bool param express if hint insert outside/inside
+                    showOnTopPlus(e, oEl, 7 > relY); // Last bool param express if hint insert outside/inside
+                } else if (oElH - 14 < relY) // Inserting on bottom
+                {
+                    showOnBottomPlus(e, oEl, oElH - 7 < relY);
                 }
-                else if ( oElH - 14 < relY )  // Inserting on bottom
+            } else {
+                if (5 > relY) // Inserting on top
                 {
-                    showOnBottomPlus( e, oEl, oElH - 7 < relY );
-                }
-            }
-            else
-            {
-                if ( 5 > relY )  // Inserting on top
+                    showOnTop(e, oEl);
+                } else if (oElH - 5 < relY) // Inserting on bottom
                 {
-                    showOnTop( e, oEl );
-                }
-                else if ( oElH - 5 < relY )  // Inserting on bottom
-                {
-                    showOnBottom( e, oEl );
+                    showOnBottom(e, oEl);
                 }
             }
         }
@@ -626,57 +579,48 @@
          * @param oEl oElement
          * @return No value
          */
-        function showOnTop( e, oEl )
-        {
-            if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
-            {
-                hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
+        function showOnTop(e, oEl) {
+            if ($("#s-l-hint-wrapper", state.rootEl.el).length) {
+                hint.unwrap(); // If hint is wrapped by ul/ol #s-l-hint-wrapper
             }
 
             // Hint outside the oEl
-            if ( e.pageX - oEl.offset().left < setting.insertZone )
-            {
+            if (e.pageX - oEl.offset().left < setting.insertZone) {
                 // Ensure display:none if hint will be next to the placeholder
-                if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((oEl.prev("#s-l-placeholder").length) || (setting.maxLevels !== false && ! checkMaxLevels(false))) {
+                    hint.css("display", "none");
                     return;
                 }
-                oEl.before( hint );
+                oEl.before(hint);
             }
             // Hint inside the oEl
-            else
-            {
+            else {
                 var children = oEl.children(),
-                    list = oEl.children( setting.listSelector ).first();
+                    list = oEl.children(setting.listSelector).first();
 
-                if ( (list.children().first().is( '#s-l-placeholder' )) || ( setting.maxLevels !== false && ! checkMaxLevels( true )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((list.children().first().is("#s-l-placeholder")) ||
+                    (setting.maxLevels !== false && ! checkMaxLevels(true))) {
+                    hint.css("display", "none");
                     return;
                 }
 
                 // Find out if is necessary to wrap hint by hintWrapper
-                if ( ! list.length )
-                {
-                    children.first().after( hint );
-                    hint.wrap( hintWrapper );
-                }
-                else
-                {
-                    list.prepend( hint );
+                if (! list.length) {
+                    children.first().after(hint);
+                    hint.wrap(hintWrapper);
+                } else {
+                    list.prepend(hint);
                 }
 
-                if ( state.oEl )
-                {
-                    open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
+                if (state.oEl) {
+                    open(oEl); // TODO:animation??? .children('ul,ol').css('display', 'block');
                 }
 
             }
 
-            hint.css( 'display', 'block' );
+            hint.css("display", "block");
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );
+            state.isAllowed = setting.isAllowed(state.cEl.el, hint, hint.parents("li").first());
 
         }
 
@@ -687,57 +631,48 @@
          * @param outside bool
          * @return No value
          */
-        function showOnTopPlus( e, oEl, outside )
-        {
-            if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
-            {
-                hint.unwrap();  // If hint is wrapped by ul/ol #s-l-hint-wrapper
+        function showOnTopPlus(e, oEl, outside) {
+            if ($("#s-l-hint-wrapper", state.rootEl.el).length) {
+                hint.unwrap(); // If hint is wrapped by ul/ol #s-l-hint-wrapper
             }
 
             // Hint inside the oEl
-            if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
-            {
+            if (! outside && e.pageX - oEl.offset().left > setting.insertZone) {
                 var children = oEl.children(),
-                    list = oEl.children( setting.listSelector ).first();
+                    list = oEl.children(setting.listSelector).first();
 
-                if ( (list.children().first().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((list.children().first().is("#s-l-placeholder")) ||
+                    (setting.maxLevels !== false && ! checkMaxLevels(true))) {
+                    hint.css("display", "none");
                     return;
                 }
 
                 // Find out if is necessary to wrap hint by hintWrapper
-                if ( ! list.length )
-                {
-                    children.first().after( hint );
-                    hint.wrap( hintWrapper );
-                }
-                else
-                {
-                    list.prepend( hint );
+                if (! list.length) {
+                    children.first().after(hint);
+                    hint.wrap(hintWrapper);
+                } else {
+                    list.prepend(hint);
                 }
 
-                if ( state.oEl )
-                {
-                    open( oEl ); // TODO:animation??? .children('ul,ol').css('display', 'block');
+                if (state.oEl) {
+                    open(oEl); // TODO:animation??? .children('ul,ol').css('display', 'block');
                 }
             }
             // Hint outside the oEl
-            else
-            {
+            else {
                 // Ensure display:none if hint will be next to the placeholder
-                if ( (oEl.prev( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((oEl.prev("#s-l-placeholder").length) || (setting.maxLevels !== false && ! checkMaxLevels(false))) {
+                    hint.css("display", "none");
                     return;
                 }
-                oEl.before( hint );
+                oEl.before(hint);
 
             }
 
-            hint.css( 'display', 'block' );
+            hint.css("display", "block");
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );
+            state.isAllowed = setting.isAllowed(state.cEl.el, hint, hint.parents("li").first());
 
         }
 
@@ -747,57 +682,48 @@
          * @param oEl oElement
          * @return No value
          */
-        function showOnBottom( e, oEl )
-        {
-            if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
-            {
-                hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
+        function showOnBottom(e, oEl) {
+            if ($("#s-l-hint-wrapper", state.rootEl.el).length) {
+                hint.unwrap(); // If hint is wrapped by ul/ol s-l-hint-wrapper
             }
 
             // Hint outside the oEl
-            if ( e.pageX - oEl.offset().left < setting.insertZone )
-            {
+            if (e.pageX - oEl.offset().left < setting.insertZone) {
                 // Ensure display:none if hint will be next to the placeholder
-                if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((oEl.next("#s-l-placeholder").length) || (setting.maxLevels !== false && ! checkMaxLevels(false))) {
+                    hint.css("display", "none");
                     return;
                 }
-                oEl.after( hint );
+                oEl.after(hint);
             }
             // Hint inside the oEl
-            else
-            {
+            else {
                 var children = oEl.children(),
-                    list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
+                    list = oEl.children(setting.listSelector).last(); // ul/ol || empty jQuery obj
 
-                if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((list.children().last().is("#s-l-placeholder")) ||
+                    (setting.maxLevels !== false && ! checkMaxLevels(true))) {
+                    hint.css("display", "none");
                     return;
                 }
 
                 // Find out if is necessary to wrap hint by hintWrapper
-                if ( list.length )
-                {
-                    children.last().append( hint );
-                }
-                else
-                {
-                    oEl.append( hint );
-                    hint.wrap( hintWrapper );
+                if (list.length) {
+                    children.last().append(hint);
+                } else {
+                    oEl.append(hint);
+                    hint.wrap(hintWrapper);
                 }
 
-                if ( state.oEl )
-                {
-                    open( oEl ); // TODO: animation???
+                if (state.oEl) {
+                    open(oEl); // TODO: animation???
                 }
 
             }
 
-            hint.css( 'display', 'block' );
+            hint.css("display", "block");
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );
+            state.isAllowed = setting.isAllowed(state.cEl.el, hint, hint.parents("li").first());
 
         }
 
@@ -808,58 +734,49 @@
          * @param outside bool
          * @return No value
          */
-        function showOnBottomPlus( e, oEl, outside )
-        {
-            if ( $( '#s-l-hint-wrapper', state.rootEl.el ).length )
-            {
-                hint.unwrap();  // If hint is wrapped by ul/ol s-l-hint-wrapper
+        function showOnBottomPlus(e, oEl, outside) {
+            if ($("#s-l-hint-wrapper", state.rootEl.el).length) {
+                hint.unwrap(); // If hint is wrapped by ul/ol s-l-hint-wrapper
             }
 
             // Hint inside the oEl
-            if ( ! outside && e.pageX - oEl.offset().left > setting.insertZone )
-            {
+            if (! outside && e.pageX - oEl.offset().left > setting.insertZone) {
                 var children = oEl.children(),
-                    list = oEl.children( setting.listSelector ).last();  // ul/ol || empty jQuery obj
+                    list = oEl.children(setting.listSelector).last(); // ul/ol || empty jQuery obj
 
-                if ( (list.children().last().is( '#s-l-placeholder' )) || (setting.maxLevels !== false && ! checkMaxLevels( true )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((list.children().last().is("#s-l-placeholder")) ||
+                    (setting.maxLevels !== false && ! checkMaxLevels(true))) {
+                    hint.css("display", "none");
                     return;
                 }
 
                 // Find out if is necessary to wrap hint by hintWrapper
-                if ( list.length )
-                {
-                    children.last().append( hint );
-                }
-                else
-                {
-                    oEl.append( hint );
-                    hint.wrap( hintWrapper );
+                if (list.length) {
+                    children.last().append(hint);
+                } else {
+                    oEl.append(hint);
+                    hint.wrap(hintWrapper);
                 }
 
-                if ( state.oEl )
-                {
-                    open( oEl ); // TODO: animation???
+                if (state.oEl) {
+                    open(oEl); // TODO: animation???
                 }
 
             }
             // Hint outside the oEl
-            else
-            {
+            else {
                 // Ensure display:none if hint will be next to the placeholder
-                if ( (oEl.next( '#s-l-placeholder' ).length) || (setting.maxLevels !== false && ! checkMaxLevels( false )) )
-                {
-                    hint.css( 'display', 'none' );
+                if ((oEl.next("#s-l-placeholder").length) || (setting.maxLevels !== false && ! checkMaxLevels(false))) {
+                    hint.css("display", "none");
                     return;
                 }
-                oEl.after( hint );
+                oEl.after(hint);
 
             }
 
-            hint.css( 'display', 'block' );
+            hint.css("display", "block");
             // Ensures posible formating of elements. Second call is in the endDrag method.
-            state.isAllowed = setting.isAllowed( state.cEl.el, hint, hint.parents( 'li' ).first() );
+            state.isAllowed = setting.isAllowed(state.cEl.el, hint, hint.parents("li").first());
 
         }
 
@@ -870,20 +787,16 @@
          * @desc Handles opening nested lists
          * @param li
          */
-        function open( li )
-        {
-            li.removeClass( 's-l-closed' ).addClass( 's-l-open' );
-            li.children( setting.listSelector ).css( 'display', 'block' );
+        function open(li) {
+            li.removeClass("s-l-closed").addClass("s-l-open");
+            li.children(setting.listSelector).css("display", "block");
 
-            var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
+            var opener = li.children("div").children(".s-l-opener").first();
 
-            if ( setting.opener.as == 'html' )
-            {
-                opener.html( setting.opener.close );
-            }
-            else if ( setting.opener.as == 'class' )
-            {
-                opener.addClass( setting.opener.close ).removeClass( setting.opener.open );
+            if (setting.opener.as == "html") {
+                opener.html(setting.opener.close);
+            } else if (setting.opener.as == "class") {
+                opener.addClass(setting.opener.close).removeClass(setting.opener.open);
             }
         }
 
@@ -891,20 +804,16 @@
          * @desc Handles opening nested lists
          * @param li
          */
-        function close( li )
-        {
-            li.removeClass( 's-l-open' ).addClass( 's-l-closed' );
-            li.children( setting.listSelector ).css( 'display', 'none' );
+        function close(li) {
+            li.removeClass("s-l-open").addClass("s-l-closed");
+            li.children(setting.listSelector).css("display", "none");
 
-            var opener = li.children( 'div' ).children( '.s-l-opener' ).first();
+            var opener = li.children("div").children(".s-l-opener").first();
 
-            if ( setting.opener.as == 'html' )
-            {
-                opener.html( setting.opener.open );
-            }
-            else if ( setting.opener.as == 'class' )
-            {
-                opener.addClass( setting.opener.open ).removeClass( setting.opener.close );
+            if (setting.opener.as == "html") {
+                opener.html(setting.opener.open);
+            } else if (setting.opener.as == "class") {
+                opener.addClass(setting.opener.open).removeClass(setting.opener.close);
             }
 
         }
@@ -912,83 +821,72 @@
         /////// Enf of open/close handlers //////////////////////////////////////////////
         /////// Levels handlers /////////////////////////////////////////////////////////
 
-        function getInsideLevels( li )
-        {
+        function getInsideLevels(li) {
             var levs = 0;
 
-            var list = li.children( setting.listSelector );
+            var list = li.children(setting.listSelector);
 
-            if( list.length )
-            {
+            if (list.length) {
                 levs++;
                 var maxNestedLevs = 0;
                 var currLiLevs = 0;
-                list.find( 'li' ).each( function( i )
-                {
+                list.find("li").each(function(i) {
                     currLiLevs = getInsideLevels($(this));
-                    if( maxNestedLevs < currLiLevs ) maxNestedLevs = currLiLevs;
+                    if (maxNestedLevs < currLiLevs) maxNestedLevs = currLiLevs;
                 });
 
-                if( maxNestedLevs ) levs = levs + maxNestedLevs;
+                if (maxNestedLevs) levs = levs + maxNestedLevs;
             }
 
             return levs;
         }
 
-        function setInsideLevels( li, levs )
-        {
-            li.data('inside-levels', levs);
+        function setInsideLevels(li, levs) {
+            li.data("inside-levels", levs);
         }
 
-        function getUpperLevels( li )
-        {
+        function getUpperLevels(li) {
             var levs = 0;
             var rootEl = state.rootEl.el;
-            var parentList = li.closest( setting.listSelector );
+            var parentList = li.closest(setting.listSelector);
 
-            while( ! parentList.is( rootEl ) )
-            {
+            while (! parentList.is(rootEl)) {
                 levs++;
-                parentList = parentList.parent().closest( setting.listSelector );
+                parentList = parentList.parent().closest(setting.listSelector);
             }
 
             return levs;
         }
 
-        function setUpperLevels( li, levs )
-        {
-            li.data('upper-levels', levs);
+        function setUpperLevels(li, levs) {
+            li.data("upper-levels", levs);
         }
 
-        function checkMaxLevels( inside )
-        {
-            var insideLevs = state.cEl.el.data( 'inside-levels' );
-            var upperLevs = state.oEl.data( 'upper-levels' );
+        function checkMaxLevels(inside) {
+            var insideLevs = state.cEl.el.data("inside-levels");
+            var upperLevs = state.oEl.data("upper-levels");
 
             return setting.maxLevels > upperLevs + insideLevs + (inside ? 1 : 0);
         }
 
-        function recountLevels( li )
-        {
+        function recountLevels(li) {
             var rootEl = state.rootEl.el;
-            var parentList = li.parent( setting.listSelector );
+            var parentList = li.parent(setting.listSelector);
 
-            setInsideLevels( li, getInsideLevels( li ) );
-            setUpperLevels( li, getUpperLevels( li ) );
+            setInsideLevels(li, getInsideLevels(li));
+            setUpperLevels(li, getUpperLevels(li));
 
             var i = 0;
-            li.find( 'li' ).each( function()
-            {
+            li.find("li").each(function() {
                 var li = $(this);
-                setInsideLevels( li, getInsideLevels( li ) );
-                setUpperLevels( li, getUpperLevels( li ) );
+                setInsideLevels(li, getInsideLevels(li));
+                setUpperLevels(li, getUpperLevels(li));
             });
 
-            while( ! parentList.is( rootEl ) && i < 50 )
-            {
-                var li = parentList.parent( 'li' );
-                setInsideLevels( li, getInsideLevels( li ) ); // No need to set upper levels
-                parentList = li.parent( setting.listSelector );
+            while (! parentList.is(rootEl) && i < 50) {
+                var li = parentList.parent("li");
+                setInsideLevels(li, getInsideLevels(li)); // No need to set upper levels
+                parentList = li.parent(setting.listSelector);
                 i++;
             }
         }
@@ -1000,31 +898,27 @@
          * @desc Places the currEl to the target place
          * @param cEl
          */
-        function tidyCurrEl( cEl )
-        {
+        function tidyCurrEl(cEl) {
             var cElStyle = cEl.el[0].style;
 
-            cEl.el.removeClass( setting.currElClass + ' s-l-current' );
-            cElStyle.top = '0';
-            cElStyle.left = '0';
-            cElStyle.position = 'relative';
-            cElStyle.width = 'auto';
+            cEl.el.removeClass(setting.currElClass + " s-l-current");
+            cElStyle.top = "0";
+            cElStyle.left = "0";
+            cElStyle.position = "relative";
+            cElStyle.width = "auto";
 
         }
 
         /**
          * @desc Removes empty lists and redundant openers
          */
-        function tidyEmptyLists()
-        {
+        function tidyEmptyLists() {
             // Remove every empty ul/ol from root and also with .s-l-opener
             // hintWrapper can not be removed before the hint
-            $( setting.listSelector, state.rootEl.el ).each( function( i )
-                {
-                    if ( ! $( this ).children().length )
-                    {
-                        $( this ).prev( 'div' ).children( '.s-l-opener' ).first().remove();
-                        $( this ).remove();
+            $(setting.listSelector, state.rootEl.el).each(function(i) {
+                    if (! $(this).children().length) {
+                        $(this).prev("div").children(".s-l-opener").first().remove();
+                        $(this).remove();
                     }
                 }
             );
@@ -1040,31 +934,28 @@
      * @desc jQuery plugin
      * @returns this to unsure chaining
      */
-    $.fn.sortableListsToArray = function( arr, parentId )
-    {
+    $.fn.sortableListsToArray = function(arr, parentId) {
         arr = arr || [];
         var order = 0;
 
-        this.children( 'li' ).each( function()
-        {
-            var li = $( this ),
+        this.children("li").each(function() {
+            var li = $(this),
                 listItem = {},
-                id = li.attr( 'id' );
+                id = li.attr("id");
 
-            if ( ! id )
-            {
-                console.log( li ); // Have to be here! Read next exception message.
-                throw 'Previous item in console.log has no id. It is necessary to create the array.';
+            if (! id) {
+                console.log(li); // Have to be here! Read next exception message.
+                throw "Previous item in console.log has no id. It is necessary to create the array.";
             }
 
             listItem.id = id;
             listItem.parentId = parentId;
-            listItem.value = li.data( 'value' );
+            listItem.value = li.data("value");
             listItem.order = order;
-            arr.push( listItem );
-            li.children( 'ul,ol' ).sortableListsToArray( arr, id );
+            arr.push(listItem);
+            li.children("ul,ol").sortableListsToArray(arr, id);
             order ++;
-        } );
+        });
 
         return arr;
 
@@ -1074,29 +965,26 @@
      * @desc jQuery plugin
      * @returns this to unsure chaining
      */
-    $.fn.sortableListsToHierarchy = function()
-    {
+    $.fn.sortableListsToHierarchy = function() {
         var arr = [],
             order = 0;
 
-        $( this ).children( 'li' ).each( function()
-        {
-            var li = $( this ),
+        $(this).children("li").each(function() {
+            var li = $(this),
                 listItem = {},
-                id = li.attr( 'id' );
+                id = li.attr("id");
 
-            if ( ! id )
-            {
-                console.log( li ); // Have to be here! Read next exception message.
-                throw 'Previous item in console.log has no id. It is necessary to create the array.';
+            if (! id) {
+                console.log(li); // Have to be here! Read next exception message.
+                throw "Previous item in console.log has no id. It is necessary to create the array.";
             }
             listItem.id = id;
-            listItem.value = li.data( 'value' );
+            listItem.value = li.data("value");
             listItem.order = order;
-            arr.push( listItem );
-            listItem.children = li.children( 'ul,ol' ).sortableListsToHierarchy();
+            arr.push(listItem);
+            listItem.children = li.children("ul,ol").sortableListsToHierarchy();
             order ++;
-        } );
+        });
 
         return arr;
 
@@ -1106,30 +994,27 @@
      * @desc jQuery plugin
      * @returns string
      */
-    $.fn.sortableListsToString = function( arr, parentId )
-    {
+    $.fn.sortableListsToString = function(arr, parentId) {
         arr = arr || [];
-        parentId = parentId || 'no-parent'; // string "0" is evaluate to true and is valid
+        parentId = parentId || "no-parent"; // string "0" is evaluate to true and is valid
 
-        $( this ).children( 'li' ).each( function()
-        {
-            var li = $( this ),
-                id = li.attr( 'id' ),
-                matches = id ? id.match( /(.+)[-=_](.+)/ ) : null; // string "0" is evaluate to true but is not valid
+        $(this).children("li").each(function() {
+            var li = $(this),
+                id = li.attr("id"),
+                matches = id ? id.match(/(.+)[-=_](.+)/) : null; // string "0" is evaluate to true but is not valid
 
-            if ( ! matches )
-            {
-                console.log( li );  // Have to be here. Read next exception message.
-                throw 'Previous item in console.log has no id or id is not in required format xx_yy, xx-yy or xx=yy. It is necessary to create valid string.';
+            if (! matches) {
+                console.log(li); // Have to be here. Read next exception message.
+                throw "Previous item in console.log has no id or id is not in required format xx_yy, xx-yy or xx=yy. It is necessary to create valid string.";
             }
 
-            arr.push( matches[1] + '[' + matches[2] + ']=' + parentId );
-            $( this ).children( 'ul,ol' ).sortableListsToString( arr, matches[2] );
+            arr.push(matches[1] + "[" + matches[2] + "]=" + parentId);
+            $(this).children("ul,ol").sortableListsToString(arr, matches[2]);
 
-        } );
+        });
 
-        return arr.join( '&' );
+        return arr.join("&");
 
     };
 
-}( jQuery ));
+}(jQuery));

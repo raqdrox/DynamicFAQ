@@ -1,5 +1,3 @@
-using System;
-
 namespace DynamicFAQ.Models
 {
     public class ErrorViewModel

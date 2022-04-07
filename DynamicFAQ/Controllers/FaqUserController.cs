@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
 using DynamicFAQ.Data;
-using DynamicFAQ.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DynamicFAQ.Controllers
 {
@@ -23,6 +18,5 @@ namespace DynamicFAQ.Controllers
         {
             return View(await _context.Section.Include(m => m.Data).ToListAsync());
         }
-
     }
 }
