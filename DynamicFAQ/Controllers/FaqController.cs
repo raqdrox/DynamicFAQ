@@ -333,7 +333,7 @@ namespace DynamicFAQ.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReorderFaq(int? id, [Bind("Question,Answer")] QuestionAnswer questionAnswer)
-        {
+        {/*
             if (id == null)
             {
                 return NotFound();
@@ -344,7 +344,7 @@ namespace DynamicFAQ.Controllers
                 addedFaq.Property("SectionId").CurrentValue = id;
                 await _db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            }*/
             return View();
         }
 
