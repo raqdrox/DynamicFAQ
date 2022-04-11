@@ -4,5 +4,11 @@
     "inputFiles": [
       "wwwroot/css/Faq.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/FaqStyle.min.css",
+    "inputFiles": [
+      "wwwroot/css/FaqStyle.css"
+    ]
   }
 ]
