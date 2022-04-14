@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>popper.js</id>
+    <version>1.12.9</version>
+    <authors>FezVrasta</authors>
+    <owners>FezVrasta</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://popper.js.org/</projectUrl>
+    <description>A kickass library to manage your poppers</description>
+  </metadata>
+</package>
