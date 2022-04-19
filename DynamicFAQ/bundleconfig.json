@@ -10,5 +10,17 @@
     "inputFiles": [
       "wwwroot/css/FaqStyle.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/jquery-3.6.0.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery-3.6.0.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/handlebars.min.js",
+    "inputFiles": [
+      "wwwroot/js/handlebars.js"
+    ]
   }
 ]

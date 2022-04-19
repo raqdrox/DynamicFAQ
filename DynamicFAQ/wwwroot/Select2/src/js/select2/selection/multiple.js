@@ -1,116 +1,120 @@
 define([
-  'jquery',
-  './base',
-  '../utils'
-], function ($, BaseSelection, Utils) {
-  function MultipleSelection ($element, options) {
-    MultipleSelection.__super__.constructor.apply(this, arguments);
-  }
-
-  Utils.Extend(MultipleSelection, BaseSelection);
-
-  MultipleSelection.prototype.render = function () {
-    var $selection = MultipleSelection.__super__.render.call(this);
-
-    $selection.addClass('select2-selection--multiple');
-
-    $selection.html(
-      '<ul class="select2-selection__rendered"></ul>'
-    );
-
-    return $selection;
-  };
-
-  MultipleSelection.prototype.bind = function (container, $container) {
-    var self = this;
-
-    MultipleSelection.__super__.bind.apply(this, arguments);
-
-    this.$selection.on('click', function (evt) {
-      self.trigger('toggle', {
-        originalEvent: evt
-      });
-    });
-
-    this.$selection.on(
-      'click',
-      '.select2-selection__choice__remove',
-      function (evt) {
-        // Ignore the event if it is disabled
-        if (self.isDisabled()) {
-          return;
+        "jquery",
+        "./base",
+        "../utils"
+    ],
+    function($, BaseSelection, Utils) {
+        function MultipleSelection($element, options) {
+            MultipleSelection.__super__.constructor.apply(this, arguments);
         }
 
-        var $remove = $(this);
-        var $selection = $remove.parent();
+        Utils.Extend(MultipleSelection, BaseSelection);
 
-        var data = Utils.GetData($selection[0], 'data');
+        MultipleSelection.prototype.render = function() {
+            var $selection = MultipleSelection.__super__.render.call(this);
 
-        self.trigger('unselect', {
-          originalEvent: evt,
-          data: data
-        });
-      }
-    );
-  };
+            $selection.addClass("select2-selection--multiple");
 
-  MultipleSelection.prototype.clear = function () {
-    var $rendered = this.$selection.find('.select2-selection__rendered');
-    $rendered.empty();
-    $rendered.removeAttr('title');
-  };
+            $selection.html(
+                '<ul class="select2-selection__rendered"></ul>'
+            );
 
-  MultipleSelection.prototype.display = function (data, container) {
-    var template = this.options.get('templateSelection');
-    var escapeMarkup = this.options.get('escapeMarkup');
+            return $selection;
+        };
 
-    return escapeMarkup(template(data, container));
-  };
+        MultipleSelection.prototype.bind = function(container, $container) {
+            var self = this;
 
-  MultipleSelection.prototype.selectionContainer = function () {
-    var $container = $(
-      '<li class="select2-selection__choice">' +
-        '<span class="select2-selection__choice__remove" role="presentation">' +
-          '&times;' +
-        '</span>' +
-      '</li>'
-    );
+            MultipleSelection.__super__.bind.apply(this, arguments);
 
-    return $container;
-  };
+            this.$selection.on("click",
+                function(evt) {
+                    self.trigger("toggle",
+                        {
+                            originalEvent: evt
+                        });
+                });
 
-  MultipleSelection.prototype.update = function (data) {
-    this.clear();
+            this.$selection.on(
+                "click",
+                ".select2-selection__choice__remove",
+                function(evt) {
+                    // Ignore the event if it is disabled
+                    if (self.isDisabled()) {
+                        return;
+                    }
 
-    if (data.length === 0) {
-      return;
-    }
+                    var $remove = $(this);
+                    var $selection = $remove.parent();
 
-    var $selections = [];
+                    var data = Utils.GetData($selection[0], "data");
 
-    for (var d = 0; d < data.length; d++) {
-      var selection = data[d];
+                    self.trigger("unselect",
+                        {
+                            originalEvent: evt,
+                            data: data
+                        });
+                }
+            );
+        };
 
-      var $selection = this.selectionContainer();
-      var formatted = this.display(selection, $selection);
+        MultipleSelection.prototype.clear = function() {
+            var $rendered = this.$selection.find(".select2-selection__rendered");
+            $rendered.empty();
+            $rendered.removeAttr("title");
+        };
 
-      $selection.append(formatted);
+        MultipleSelection.prototype.display = function(data, container) {
+            var template = this.options.get("templateSelection");
+            var escapeMarkup = this.options.get("escapeMarkup");
 
-      var title = selection.title || selection.text;
+            return escapeMarkup(template(data, container));
+        };
 
-      if (title) {
-        $selection.attr('title', title);
-      }
+        MultipleSelection.prototype.selectionContainer = function() {
+            var $container = $(
+                '<li class="select2-selection__choice">' +
+                '<span class="select2-selection__choice__remove" role="presentation">' +
+                "&times;" +
+                "</span>" +
+                "</li>"
+            );
 
-      Utils.StoreData($selection[0], 'data', selection);
+            return $container;
+        };
 
-      $selections.push($selection);
-    }
+        MultipleSelection.prototype.update = function(data) {
+            this.clear();
 
-    var $rendered = this.$selection.find('.select2-selection__rendered');
+            if (data.length === 0) {
+                return;
+            }
 
-    Utils.appendMany($rendered, $selections);
-  };
+            var $selections = [];
 
-  return MultipleSelection;
-});
+            for (var d = 0; d < data.length; d++) {
+                var selection = data[d];
+
+                var $selection = this.selectionContainer();
+                var formatted = this.display(selection, $selection);
+
+                $selection.append(formatted);
+
+                var title = selection.title || selection.text;
+
+                if (title) {
+                    $selection.attr("title", title);
+                }
+
+                Utils.StoreData($selection[0], "data", selection);
+
+                $selections.push($selection);
+            }
+
+            var $rendered = this.$selection.find(".select2-selection__rendered");
+
+            Utils.appendMany($rendered, $selections);
+        };
+
+        return MultipleSelection;
+    });

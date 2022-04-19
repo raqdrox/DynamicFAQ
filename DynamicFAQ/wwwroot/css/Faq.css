@@ -134,15 +134,16 @@ a {
 
 .ml-15 { margin-left: 15px !important; }
 
-.accordion.accordion-type-2 .card .card-header > a.collapsed:after { content: "\f158"; }
+.accordion.accordion-type-2 .card .card-header > a.collapsed:after { content: "\f055"; }
 
 .accordion.accordion-type-2 .card .card-header > a::after {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    content: "\f176";
+    content: "\f056";
     display: inline-block;
-    font: normal normal normal 14px/1 'Ionicons';
+    font-family: "Font Awesome 6 Free";
     font-size: 21px;
+    font-weight: 900;
     left: 20px;
     line-height: 1;
     position: absolute;

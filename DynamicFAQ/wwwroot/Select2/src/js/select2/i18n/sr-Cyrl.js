@@ -1,58 +1,59 @@
-define(function () {
-  // Serbian Cyrilic
-  function ending (count, one, some, many) {
-    if (count % 10 == 1 && count % 100 != 11) {
-      return one;
+define(function() {
+    // Serbian Cyrilic
+    function ending(count, one, some, many) {
+        if (count % 10 == 1 && count % 100 != 11) {
+            return one;
+        }
+
+        if (count % 10 >= 2 &&
+            count % 10 <= 4 &&
+            (count % 100 < 12 || count % 100 > 14)) {
+            return some;
+        }
+
+        return many;
     }
 
-    if (count % 10 >= 2 && count % 10 <= 4 &&
-      (count % 100 < 12 || count % 100 > 14)) {
-        return some;
-    }
+    return {
+        errorLoading: function() {
+            return "Преузимање није успело.";
+        },
+        inputTooLong: function(args) {
+            var overChars = args.input.length - args.maximum;
 
-    return many;
-  }
+            var message = "Обришите " + overChars + " симбол";
 
-  return {
-    errorLoading: function () {
-      return 'Преузимање није успело.';
-    },
-    inputTooLong: function (args) {
-      var overChars = args.input.length - args.maximum;
+            message += ending(overChars, "", "а", "а");
 
-      var message = 'Обришите ' + overChars + ' симбол';
+            return message;
+        },
+        inputTooShort: function(args) {
+            var remainingChars = args.minimum - args.input.length;
 
-      message += ending(overChars, '', 'а', 'а');
+            var message = "Укуцајте бар још " + remainingChars + " симбол";
 
-      return message;
-    },
-    inputTooShort: function (args) {
-      var remainingChars = args.minimum - args.input.length;
+            message += ending(remainingChars, "", "а", "а");
 
-      var message = 'Укуцајте бар још ' + remainingChars + ' симбол';
+            return message;
+        },
+        loadingMore: function() {
+            return "Преузимање још резултата…";
+        },
+        maximumSelected: function(args) {
+            var message = "Можете изабрати само " + args.maximum + " ставк";
 
-      message += ending(remainingChars, '', 'а', 'а');
+            message += ending(args.maximum, "у", "е", "и");
 
-      return message;
-    },
-    loadingMore: function () {
-      return 'Преузимање још резултата…';
-    },
-    maximumSelected: function (args) {
-      var message = 'Можете изабрати само ' + args.maximum + ' ставк';
-
-      message += ending(args.maximum, 'у', 'е', 'и');
-
-      return message;
-    },
-    noResults: function () {
-      return 'Ништа није пронађено';
-    },
-    searching: function () {
-      return 'Претрага…';
-    },
-    removeAllItems: function () {
-      return 'Уклоните све ставке';
-    }
-  };
+            return message;
+        },
+        noResults: function() {
+            return "Ништа није пронађено";
+        },
+        searching: function() {
+            return "Претрага…";
+        },
+        removeAllItems: function() {
+            return "Уклоните све ставке";
+        }
+    };
 });
