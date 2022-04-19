@@ -139,13 +139,13 @@ a {
 .accordion.accordion-type-2 .card .card-header > a::after {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    content: "\f056";
-    display: inline-block;
-    font-family: "Font Awesome 6 Free";
-    font-size: 21px;
+    display: block;
+    font-family: 'Font Awesome 6 Free';
+    font-style: normal;
     font-weight: 900;
     left: 20px;
     line-height: 1;
+    content: "\f056";
     position: absolute;
     speak: none;
     text-rendering: auto;
