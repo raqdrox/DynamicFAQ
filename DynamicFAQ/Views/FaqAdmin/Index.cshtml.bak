@@ -103,10 +103,10 @@
     <a asp-action="EditFaq" id="editFaqLink"></a>
 </div>
 <script id="qotmpl" type="text/x-handlebars-template">
-        <form method="get" class="QOptions" data-qid="{{qid}}">
-            <button id="delFaqLink" class="btn btn-secondary btn-sm"><h6>Delete FAQ</h6></button>
-            <button id="editFaqLink" class="btn btn-secondary btn-sm"><h6>Edit FAQ</h6></button>
-        </form>
+        <div class="QOptions" data-qid="{{qid}}">
+            <a id="delFaqLink"><h6>Delete Faq</h6></a>
+            <a id="editFaqLink"><h6>Edit Faq</h6></a>
+        </div>
     </script>
 <script id="qatmpl" type="text/x-handlebars-template">
             <div class="card" data-qid="{{id}}" data-accordionid="{{ida}}">
@@ -122,7 +122,7 @@
 
 <script id="btntmpl" type="text/x-handlebars-template">
         <li id="QAsectionBtn{{id}}" data-sec-id={{id}} class="list-group-item d-flex align-items-center">
-            <i  data-sec-id={{id}}></i>{{sec}}
+            <i class="ion ion-md-sunny mr-15" data-sec-id={{id}}></i>{{sec}}
         </li>
         </script>
 
@@ -156,18 +156,18 @@
         $("#sectionNameHead").empty();
         $("#sectionNameHead").append(currSec.name);
 
-        $("#SectionOptionLinks").find("form").children("button[formaction]").each(function() {
+        $("#SectionOptionLinks").children("a[href]").each(function() {
             var link;
             if ($(this).is("[data-orig-link]")) {
                 link = $(this).attr("data-orig-link");
 
             } else {
-                link = $(this).attr("formaction");
+                link = $(this).attr("href");
 
                 $(this).attr("data-orig-link", link);
             }
             var newLink = link + "/" + currSec.id.toString();
-            $(this).attr("formaction", newLink);
+            $(this).attr("href", newLink);
         });
 
         containerPGroup.empty();
@@ -185,18 +185,19 @@
             var edlink = $('#template').children('#editFaqLink').attr('href');
             containerPGroup.children().eq(i).append(qo);
             var qoi = containerPGroup.children().eq(i).find('.QOptions');
-            $(qoi).children("#delFaqLink").attr('formaction', dellink);
-            $(qoi).children("#editFaqLink").attr('formaction', edlink);
-            $(qoi).children("button").each(function() {
+            $(qoi).children("#delFaqLink").attr('href', dellink);
+            console.log($(qoi).children("#delFaqLink").is('[href]'));
+            $(qoi).children("#editFaqLink").attr('href', edlink);
+            $(qoi).children("a").each(function() {
                 var link;
                 if ($(this).is("[data-orig-link]")) {
                     link = $(this).attr("data-orig-link");
                 } else {
-                    link = $(this).attr("formaction");
+                    link = $(this).attr("href");
                     $(this).attr("data-orig-link", link);
                 }
                 var newLink = link + "/" + currSec.data[i].id.toString();
-                $(this).attr("formaction", newLink);
+                $(this).attr("href", newLink);
             });;
         }
     }
@@ -286,4 +287,9 @@
     }
 
 </script>
+<style type="text/css">
+    .QOptions { }
+
+    .SectionOptions { }
+</style>
 </body>
