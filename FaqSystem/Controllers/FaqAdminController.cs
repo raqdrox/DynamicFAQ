@@ -170,7 +170,7 @@ namespace FaqSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateQuestion([Bind("SectionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
         {
-            WriteData(questionViewModel.ArticleContents);
+            WriteDataToDebugFile(questionViewModel.ArticleContents);
             
             var sanitizedArticle = sanitizer.Sanitize(questionViewModel.ArticleContents);
             FaqArticle article = new FaqArticle(0, sanitizedArticle);
@@ -188,9 +188,9 @@ namespace FaqSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public void WriteData(string data)
+        public void WriteDataToDebugFile(string data)
         {
-            string path = @"TextEditorResult.txt";
+            string path = @"DebugFile.txt";
             System.IO.File.WriteAllText(path, data);
         }
 
@@ -318,7 +318,7 @@ namespace FaqSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditQuestion(int? id,[Bind("SectionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
         {
-            WriteData(questionViewModel.ArticleContents);
+            WriteDataToDebugFile(questionViewModel.ArticleContents);
             if (id == null)
             {
                 return NotFound();
