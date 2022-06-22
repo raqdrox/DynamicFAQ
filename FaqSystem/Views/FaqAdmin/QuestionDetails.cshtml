@@ -1,0 +1,51 @@
+﻿@model FaqSystem.Models.FaqQuestionViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+    <link href="/css/Faq.css" rel="stylesheet">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="wrapper">
+    <dl class="dl-horizontal row-cols-md-1">
+        <dt>
+            Question Title:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.QuestionTitle)
+        </dd>
+        <dt>
+            Section Id and Name:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SectionId) @ViewBag.sectionName
+        </dd>
+
+        <dt>
+            Article:
+        </dt>
+        <dd>
+            <div style="overflow-y: scroll; overflow-x: hidden;height:500px">
+                @Html.Raw(Model.ArticleContents)
+            </div>
+        </dd>
+    </dl>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+﻿<nav id="sidebar" class="">
+    <div class="sidebar-header">
+        <h3>Navigation</h3>
+    </div>
+
+    <ul class="list-unstyled components adminSidebarOptions" id="SectionNavList">
+        <li id="sectionSidebarOp"><a href="#sections">Sections</a></li>
+        <li id="questionSidebarOp"><a href="#questions">Questions</a></li>
+    </ul>
+
+</nav>
+<script type="text/javascript" language="javascript">
+    window.addEventListener('hashchange', changeHashSidebar);
+    changeHashSidebar();
+    function changeHashSidebar() {
+        var hash = window.location.hash;
+        switch (hash) {
+        case "#sections":
+            document.getElementById("sectionSidebarOp").classList.toggle("active", true);
+            document.getElementById("questionSidebarOp").classList.toggle("active", false);
+            break;
+        case "#questions":
+            document.getElementById("sectionSidebarOp").classList.toggle("active", false);
+            document.getElementById("questionSidebarOp").classList.toggle("active", true);
+            break;
+            
+        default:
+            document.getElementById("sectionSidebarOp").classList.toggle("active", true);
+            document.getElementById("questionSidebarOp").classList.toggle("active", false);
+            break;
+        }
+    }
+</script>

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<FaqSystem.Models.FaqSection>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/css/Faq.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+</head>
+<body>
+
+    <div class="wrapper align-content-center">
+        
+        <partial name="_FaqAdminSidebarPartial"/>
+        <div id="content">
+            <div class="hidden" id="sectionDetails">
+                <!-- Section Table  -->
+                <partial name="_SectionTablePartial" model="@Model" />
+            </div>
+            <div class="hidden" id="questionDetails">
+                <!-- Question Table -->
+                <partial name="_QuestionTablePartial" model="@Model" />
+            </div>
+        </div>
+        
+
+    </div>
+<script type="text/javascript" language="javascript">
+    window.addEventListener('hashchange', changeHash);
+    changeHash();
+    function changeHash() {
+        var hash = window.location.hash; 
+        switch (hash) {
+            case "#sections":
+                document.getElementById("sectionDetails").classList.toggle("hidden", false);
+                document.getElementById("questionDetails").classList.toggle("hidden", true);
+                break;
+            case "#questions":
+                document.getElementById("sectionDetails").classList.toggle("hidden", true);
+                document.getElementById("questionDetails").classList.toggle("hidden", false);
+                break;
+            
+            default:
+                document.getElementById("sectionDetails").classList.toggle("hidden", false);
+                document.getElementById("questionDetails").classList.toggle("hidden", true);
+                hash = "#sections";
+                break;
+        }
+    }
+</script>
+</body>
+
+
+</html>

@@ -1,0 +1,8 @@
+﻿@model FaqSystem.Models.FaqQuestion
+
+<div id="content">
+    <h1>@Html.Raw(Model.Title)</h1>
+    <div class="richtext">
+        @Html.Raw(Model.Article.Contents)
+    </div>
+</div>

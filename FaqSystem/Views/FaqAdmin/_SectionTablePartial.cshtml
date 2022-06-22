@@ -1,0 +1,60 @@
+﻿@model IEnumerable<FaqSystem.Models.FaqSection>
+
+
+<div >
+<h4>Sections:</h4>
+<p>
+    <a asp-action="CreateSection">Create New Section</a>
+</p>
+<table class="table table-bordered fa-scroll" id="STable">
+    <thead>
+        <tr>
+            <th>
+                SID
+            </th>
+            <th>
+                Section Title
+            </th>
+            <th>
+                Questions Count
+            </th>
+            <th>
+                Controls
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @item.Id
+        </td>
+        <td>
+            @item.SectionTitle
+        </td>
+        <td>
+            @item.QList.Count
+        </td>
+        <td>
+            @if (item.Id != 0)
+            {
+                <a asp-action="EditSection" asp-route-id="@item.Id">Edit</a>
+            } 
+                <a asp-action="SectionDetails" asp-route-id="@item.Id">Details</a> 
+            @if(item.Id != 0)
+            {
+                <a asp-action="DeleteSection" asp-route-id="@item.Id">Delete</a>
+            }
+
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
+<script language="javascript" type="text/javascript">
+
+    $(document).ready(function () {
+        $('#STable').DataTable();
+    });
+</script>
+</div>

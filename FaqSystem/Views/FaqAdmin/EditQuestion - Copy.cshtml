@@ -1,0 +1,76 @@
+﻿@model FaqSystem.Models.FaqQuestionViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h2>Edit</h2>
+
+    <h4>FaqQuestion</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="EditQuestion">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="QuestionTitle" class="control-label"></label>
+                    <input asp-for="QuestionTitle" class="form-control" />
+                    <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+                    <label asp-for="SectionId" class="control-label"></label>
+                    <select asp-for="SectionId" class="form-control custom-select">
+                        <option selected>Choose Section...</option>
+                        @foreach (var sec in ViewBag.sectionList)
+                        {
+                            <option value="@sec.Id">@sec.SectionTitle</option>
+                        }
+
+                    </select>
+                    <span asp-validation-for="SectionId" class="text-danger"></span>
+                    <label asp-for="ArticleContents" class="control-label"></label>
+                    <textarea id="tiny" asp-for="ArticleContents" class="form-control" rows="10" cols="50">
+
+</textarea>
+                    <span asp-validation-for="ArticleContents" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    <script>
+        $('textarea#tiny').tinymce({
+            height: 500,
+            menubar: true,
+            plugins: [
+                'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
+                'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+                'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | a11ycheck casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist checklist outdent indent | removeformat | code table help'
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+</body>
+</html>

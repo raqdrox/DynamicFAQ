@@ -1,0 +1,90 @@
+﻿@model IEnumerable<FaqSystem.Models.FaqSection>
+
+<nav id="sidebar" style="overflow-x: hidden; overflow-y: auto;">
+    <div class="sidebar-header">
+        <h3>Frequently Asked Questions</h3>
+    </div>
+    <!-- Search  -->
+    <partial name="_SearchbarPartial" model="@Model" />
+
+    <ul class="list-unstyled components" id="SectionNavList">
+        @{var mdl = Model.ToList();}
+        @for (int i = 0; i < mdl.Count; i++)
+        {
+            <li>
+                <a href="#submenu-@i" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@mdl[i].SectionTitle</a>
+                <ul class="collapse list-unstyled submenu-list" id="submenu-@i">
+
+                    @for (int j = 0; j < mdl[i].QList.Count; j++)
+                    {
+                        <li><a asp-action="Index" asp-route-secId="@i" asp-route-qId="@j">@mdl[i].QList[j].Title</a></li>
+                    }
+
+                </ul>
+            </li>
+        }
+
+    </ul>
+
+</nav>
+
+
+<script id="controlsTmpl" type="text/x-handlebars-template">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+                <span>Toggle Sidebar</span>
+            </button>
+            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-align-justify"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Page</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Page</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</script>
+
+<script type="text/javascript" language="javascript" >
+    var sectionArray = @Html.Raw(Json.Serialize(Model.ToList()));
+    var urlParams = new URLSearchParams(window.location.search);
+    var secId = 0;
+    var qId = 0;
+    var secEle;
+    window.onload = function () {
+        if (urlParams.has("secId")) {
+            secId = urlParams.get("secId");
+        }
+        if (urlParams.has("qId")) {
+            qId = urlParams.get("qId");
+        }
+        selectOption(secId, qId);
+    };
+
+    function selectOption(sid, qid) {
+        var secEleList = $("#SectionNavList").children("li");
+        secEle = $(secEleList[sid]);
+        secEle.children(".dropdown-toggle").click();
+        secEle.children(".dropdown-toggle").addClass("active");
+        var qEle = $(secEle.children("ul").children("li")[qid]);
+        qEle.addClass("active");
+
+    }
+
+</script>
