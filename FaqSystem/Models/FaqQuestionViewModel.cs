@@ -11,7 +11,6 @@ namespace FaqSystem.Models
         [Required] public int SectionId { get; set; }
         [Required] public int QuestionId { get; set; }
         [Required] public string QuestionTitle { get; set; }
-        [Required] public List<FaqSection> Sections { get; set; }
         [Required] public string ArticleContents { get; set; }
     }
 }

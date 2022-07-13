@@ -28,13 +28,19 @@
         <h2>Question Details</h2>
         <div>
             <button type="button" class="btn btn-primary" id="toggleEditBtn" onclick="toggleEdit()">Edit</button>
+
             <button type="button" class="btn btn-primary" id="deleteSecBtn" data-toggle="modal" data-target="#deleteModal">Delete</button>
         </div>
         <br />
         <div>
             <form asp-action="EditQuestion">
+
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" name="Id" asp-for="@Model.QuestionId" />
+                <input type="hidden" name="QuestionId" asp-for="@Model.QuestionId" />
+                <div id="submitBtn">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+                <br />
                 <div class="row">
                     <div class="col-auto">
                         <h4>
@@ -44,7 +50,7 @@
                     <div class="col-auto">
                         <div>
                             <div class="form-group">
-                                <input id="titleEle" asp-for="QuestionTitle" class="form-control" cols="50"/>
+                                <input id="titleEle" asp-for="QuestionTitle" class="form-control" cols="50" />
                                 <span asp-validation-for="QuestionTitle" class="text-danger"></span>
                             </div>
                         </div>
@@ -61,7 +67,7 @@
                             <div class="form-group ">
                                 <select id="sectionEle" asp-for="SectionId" class="form-control custom-select">
                                     <option selected value="">Choose Section...</option>
-                                    @foreach (var sec in Model.Sections)
+                                    @foreach (var sec in ViewData["Sections"] as List<FaqSection>)
                                     {
                                         <option value="@sec.Id">@sec.SectionTitle</option>
                                     }
@@ -82,9 +88,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                </div>
+
             </form>
         </div>
     </div>
@@ -116,13 +120,15 @@
     var editMode = false;
     function toggleEdit() {
         editMode = !editMode;
-        var editBtnEle = document.getElementById("toggleEditBtn");
         $("#titleEle").prop("readonly", !editMode);
         $("#sectionEle").prop("disabled", !editMode);
+        var editBtnEle = document.getElementById("toggleEditBtn");
+        var submitBtn = document.getElementById("submitBtn");
+        submitBtn.classList.toggle("hidden", !editMode);
         if (editMode) {
-            tinymce.activeEditor.setMode('design');
+            tinymce.activeEditor.mode.set('design');
         } else {
-            tinymce.activeEditor.setMode('readonly');
+            tinymce.activeEditor.mode.set('readonly');
         }
         if (editMode) {
             editBtnEle.innerHTML = "Cancel";
@@ -137,15 +143,22 @@
         menubar: true,
         readonly: 1,
         plugins: [
-            'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
-            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
-            'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+             'autolink',
+            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
         ],
-        toolbar: 'undo redo | a11ycheck casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist checklist outdent indent | removeformat | code table help'
+        toolbar: 'undo redo | casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist checklist outdent indent | removeformat | code table help'
     });
-    $("#titleEle").prop("readonly", true);
-    $("#sectionEle").prop("disabled", true);
-    tinymce.activeEditor.setMode('readonly');
+    $(document).ready(function() {
+        $("#titleEle").prop("readonly", !editMode);
+        $("#sectionEle").prop("disabled", !editMode);
+        submitBtn.classList.toggle("hidden", !editMode);
+        if (editMode) {
+            tinymce.activeEditor.mode.set('design');
+        } else {
+            tinymce.activeEditor.mode.set('readonly');
+        }
+    });
+    
 </script>
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 </body>

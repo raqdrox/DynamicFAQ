@@ -36,7 +36,7 @@
     <Content Update="Views\FaqAdmin\QuestionDetails.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\FaqAdmin\EditQuestion.cshtml">
+    <Content Update="Views\FaqAdmin\EditQuestionView.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Faq\_SidebarPartial - Copy.cshtml">

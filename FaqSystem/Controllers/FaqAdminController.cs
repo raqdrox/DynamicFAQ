@@ -105,7 +105,7 @@ namespace FaqSystem.Controllers
             faqQuestionViewModel.QuestionId = id.Value;
             faqQuestionViewModel.QuestionTitle = questionSection.Item1.Title;
             faqQuestionViewModel.ArticleContents = questionSection.Item1.Article.Contents;
-            faqQuestionViewModel.Sections = faqSection;
+            ViewData["Sections"] = faqSection;
             
             
             return View(faqQuestionViewModel);
@@ -287,7 +287,7 @@ namespace FaqSystem.Controllers
 
 
         // GET: FaqAdmin/Edit/5
-        public async Task<IActionResult> EditQuestion(int? id)
+        public async Task<IActionResult> EditQuestionView(int? id)
         {
             if (id == null)
             {
@@ -320,10 +320,10 @@ namespace FaqSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditQuestionPost([Bind("SectionId", "QuestionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
         {
-            WriteDataToDebugFile(questionViewModel.ArticleContents);
+            WriteDataToDebugFile(questionViewModel.ArticleContents+"\n\n"+ questionViewModel.QuestionId+"\n\n"+ questionViewModel.QuestionTitle+"\n\n"+ questionViewModel.SectionId);
             
 
-            if (!ModelState.IsValid) return View(questionViewModel);
+            if (!ModelState.IsValid) return NotFound();
             Tuple<FaqQuestion, int,int> questionSection = GetQuestionSectionByQId(questionViewModel.QuestionId);
             if (questionSection == null)
             {
