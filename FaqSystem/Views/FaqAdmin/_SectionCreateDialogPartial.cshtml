@@ -1,0 +1,28 @@
+﻿<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSecModal">Create</button>
+<div class="modal fade" id="createSecModal" tabindex="-1" role="dialog" aria-labelledby="createSecModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createSecModalLabel">Create Section</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <form asp-action="CreateSection">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label name="SectionTitle" class="control-label"></label>
+                        <input name="SectionTitle" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

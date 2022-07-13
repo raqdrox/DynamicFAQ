@@ -38,12 +38,9 @@ namespace FaqSystem.Controllers
         }
 
         // GET: FaqAdmin
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index()
         {
-            if (id == null)
-                id = 1;
-
-            return View(id==0?"Index":"NewIndex",await _context.FaqSection.ToListAsync());
+            return View(await _context.FaqSection.ToListAsync());
         }
 
         private void InitHtmlSanitizer()
