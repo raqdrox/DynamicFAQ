@@ -97,7 +97,20 @@
         </div>
         <script type="text/javascript" language="javascript">
             var editMode = false;
-
+            var mode =@ViewData["Mode"];
+            $(document).ready(function() {
+                switch (mode) {
+                    case "details":
+                        break;
+                    case "edit":
+                        toggleEdit();
+                        break;
+                    case "delete":
+                        break;
+                    default:
+                        break;
+                }
+            });
             function toggleEdit() {
                 editMode = !editMode;
                 var editEle = document.getElementById("editTitle");

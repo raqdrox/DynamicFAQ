@@ -59,12 +59,15 @@ namespace FaqSystem.Controllers
 
 
         // GET: FaqAdmin/Details/5
-        public async Task<IActionResult> SectionDetails(int? id)
+        public async Task<IActionResult> SectionDetails(int? id,string mode="details")
         {
             if (id == null)
             {
                 return NotFound();
             }
+
+            mode = mode.ToLower();
+
             var faqSection = await _context.FaqSection.Include(q=>q.QList)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (faqSection == null)
@@ -72,6 +75,7 @@ namespace FaqSystem.Controllers
                 return NotFound();
             }
 
+            ViewData["Mode"] = mode;
             return View(faqSection);
         }
 
@@ -234,14 +238,7 @@ namespace FaqSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSection([Bind("Id,SectionTitle")] FaqSection faqSection)
         {
-            string str="";
-            foreach (var name in Request.Form)
-            {
-                str += name.Key+" : "+name.Value+"\n";
-            }
-
-            WriteDataToDebugFile(str);
-            return RedirectToAction(nameof(Index),0);
+            
             var sec = _sectionList.FirstOrDefault(s => s.Id == faqSection.Id);
             if (sec == null)
             {
