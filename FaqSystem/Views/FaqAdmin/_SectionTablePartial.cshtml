@@ -31,16 +31,7 @@
             @item.QList.Count
         </td>
         <td>
-            @if (item.Id != 0)
-            {
-                <a asp-action="SectionDetails" asp-route-id="@item.Id" asp-route-mode="edit">Edit</a>
-            } 
-                <a asp-action="SectionDetails" asp-route-id="@item.Id" asp-route-mode="details">Details</a> 
-            @if(item.Id != 0)
-            {
-                <a asp-action="DeleteSection" asp-route-id="@item.Id" asp-route-mode="delete">Delete</a>
-            }
-
+            <a asp-action="SectionDetails" asp-route-id="@item.Id" asp-route-mode="details">Details</a>
         </td>
     </tr>
 }
