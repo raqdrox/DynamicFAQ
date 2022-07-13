@@ -16,7 +16,7 @@ namespace FaqSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
         private List<FaqSection> _sectionList;
-        private HtmlSanitizer sanitizer;
+        private HtmlSanitizer _sanitizer;
         public FaqAdminController(ApplicationDbContext context)
         {
             _context = context;
@@ -38,16 +38,19 @@ namespace FaqSystem.Controllers
         }
 
         // GET: FaqAdmin
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            return View(await _context.FaqSection.ToListAsync());
+            if (id == null)
+                id = 1;
+
+            return View(id==0?"Index":"NewIndex",await _context.FaqSection.ToListAsync());
         }
 
         private void InitHtmlSanitizer()
         {
-            sanitizer = new HtmlSanitizer(allowedTags: HtmlSanitizer.DefaultAllowedTags, allowedAttributes: HtmlSanitizer.DefaultAllowedAttributes);
-            sanitizer.AllowedAttributes.Add("src");
-            sanitizer.AllowedSchemes.Add("data");
+            _sanitizer = new HtmlSanitizer(allowedTags: HtmlSanitizer.DefaultAllowedTags, allowedAttributes: HtmlSanitizer.DefaultAllowedAttributes);
+            _sanitizer.AllowedAttributes.Add("src");
+            _sanitizer.AllowedSchemes.Add("data");
 
         }
 
@@ -65,7 +68,6 @@ namespace FaqSystem.Controllers
             {
                 return NotFound();
             }
-
             var faqSection = await _context.FaqSection.Include(q=>q.QList)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (faqSection == null)
@@ -172,7 +174,7 @@ namespace FaqSystem.Controllers
         {
             WriteDataToDebugFile(questionViewModel.ArticleContents);
             
-            var sanitizedArticle = sanitizer.Sanitize(questionViewModel.ArticleContents);
+            var sanitizedArticle = _sanitizer.Sanitize(questionViewModel.ArticleContents);
             FaqArticle article = new FaqArticle(0, sanitizedArticle);
             FaqQuestion ques = new FaqQuestion(0, questionViewModel.QuestionTitle, article);
             var sec = _sectionList.FirstOrDefault(m => m.Id == questionViewModel.SectionId);
@@ -233,13 +235,17 @@ namespace FaqSystem.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSection(int id, [Bind("Id,SectionTitle")] FaqSection faqSection)
+        public async Task<IActionResult> EditSection([Bind("Id,SectionTitle")] FaqSection faqSection)
         {
-            if (id != faqSection.Id)
+            string str="";
+            foreach (var name in Request.Form)
             {
-                return NotFound();
+                str += name.Key+" : "+name.Value+"\n";
             }
-            var sec = _sectionList.FirstOrDefault(s => s.Id == id);
+
+            WriteDataToDebugFile(str);
+            return RedirectToAction(nameof(Index),0);
+            var sec = _sectionList.FirstOrDefault(s => s.Id == faqSection.Id);
             if (sec == null)
             {
                 return NotFound();
@@ -340,7 +346,7 @@ namespace FaqSystem.Controllers
                 }
                 var qpos = questionSection.Item3;
                 sec.QList[qpos].Title = questionViewModel.QuestionTitle;
-                var sanitizedArticle = sanitizer.Sanitize(questionViewModel.ArticleContents);
+                var sanitizedArticle = _sanitizer.Sanitize(questionViewModel.ArticleContents);
                 sec.QList[qpos].Article.Contents = sanitizedArticle;
                 if (questionSection.Item2 != questionViewModel.SectionId)
                 {

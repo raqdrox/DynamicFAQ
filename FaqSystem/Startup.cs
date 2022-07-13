@@ -66,7 +66,7 @@ namespace FaqSystem
             {
                 routes.MapRoute(
                     "default",
-                    "/{controller=FaqAdmin}/{action=Index}/{id?}");
+                    "/{controller=FaqAdmin}/{action}/{id?}");
             });
         }
     }
