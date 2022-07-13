@@ -316,15 +316,12 @@ namespace FaqSystem.Controllers
         // POST: FaqAdmin/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("EditQuestion")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuestion(int? id,[Bind("SectionId", "QuestionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
+        public async Task<IActionResult> EditQuestionPost([Bind("SectionId", "QuestionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
         {
             WriteDataToDebugFile(questionViewModel.ArticleContents);
-            if (id == null)
-            {
-                return NotFound();
-            }
+            
 
             if (!ModelState.IsValid) return View(questionViewModel);
             Tuple<FaqQuestion, int,int> questionSection = GetQuestionSectionByQId(questionViewModel.QuestionId);

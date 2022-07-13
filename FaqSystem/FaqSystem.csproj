@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="2.19.80" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.140" />
+    <PackageReference Include="TinyMCE" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
