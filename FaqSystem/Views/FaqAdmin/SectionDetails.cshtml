@@ -29,39 +29,44 @@
                 <button type="button" class="btn btn-primary" id="toggleEditBtn" onclick="toggleEdit()">Edit</button>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteModal">Delete</button>
             </div>
-
+            <br/>
             <div>
-                <div>
-                    <h3>
-                        Section Name:
-                    </h3>
-                    <div id="editTitle" class="hidden">
-                        <form asp-action="EditSection" method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" name="Id" asp-for="@Model.Id" />
-                            <div class="form-group">
-                                <input name="SectionTitle" asp-for="@Model.SectionTitle" class="form-control" />
-                                <span asp-validation-for="@Model.SectionTitle" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-default" />
-                            </div>
-                        </form>
+                <div class="row">
+                    <div class="col-auto">
+                        <h4>
+                            Title:
+                        </h4>
                     </div>
-                    <div id="displayTitle">
-                        @Model.SectionTitle
+                    <div class="col-auto">
+                        <div id="editTitle" class="hidden">
+                            <form asp-action="EditSection" method="post">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" name="Id" asp-for="@Model.Id" />
+                                <div class="form-group">
+                                    <input name="SectionTitle" asp-for="@Model.SectionTitle" class="form-control" />
+                                    <span asp-validation-for="@Model.SectionTitle" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                            </form>
+                        </div>
+                        <div id="displayTitle">
+                            <h4>@Model.SectionTitle</h4>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h4>Questions:</h4>
-                    <p>
-                        <a asp-action="CreateQuestion">Create New</a>
-                    </p>
+                <br/>
+                    <div>
+                        <h4>Questions:</h4>
+                        <p>
+                            <a class="btn btn-primary" asp-action="CreateQuestion">Create</a>
+                        </p>
 
-                    <partial name="_QuestionTablePartial" model="@new List<FaqSection>(){Model};" />
+                        <partial name="_QuestionTablePartial" model="@new List<FaqSection>(){Model};" />
 
+                    </div>
                 </div>
-            </div>
             <a class="btn btn-primary" asp-action="Index">Back to List</a>
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">

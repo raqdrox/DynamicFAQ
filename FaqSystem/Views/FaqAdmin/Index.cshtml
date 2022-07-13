@@ -32,15 +32,16 @@
 
         <div class="hidden" id="questionDetails">
 
-            <h4>Questions:</h4>
+            <h1>Questions:</h1>
             <a class="btn btn-primary" asp-action="CreateQuestion">Create</a>
-            <!-- Question Table -->
+            <!-- Question Table --><br />
             <partial name="_QuestionTablePartial" model="@Model" />
         </div>
 
         <div class="hidden" id="sectionDetails">
-            <h4>Sections:</h4>
+            <h1>Sections:</h1>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSecModal">Create</button>
+            <br />
             <!-- Section Table  -->
             <partial name="_SectionTablePartial" model="@Model" />
         </div>
