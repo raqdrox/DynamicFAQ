@@ -5,6 +5,11 @@
     <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
   </ItemGroup>
@@ -21,6 +26,15 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="2.19.80" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.140" />
     <PackageReference Include="TinyMCE" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HtmlSanitizer">
+      <HintPath>references\HtmlSanitizer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>references\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
