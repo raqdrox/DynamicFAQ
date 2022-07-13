@@ -6,9 +6,9 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="/js/jquery-3.6.0.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
 
@@ -17,35 +17,133 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
-    <link href="/css/Faq.css" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/css/Faq.css" />
 </head>
 <body>
 
-<div class="wrapper">
-    <dl class="dl-horizontal row-cols-md-1">
-        <dt>
-            Question Title:
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.QuestionTitle)
-        </dd>
-        <dt>
-            Section Id and Name:
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.SectionId) @ViewBag.sectionName
-        </dd>
+<div class="wrapper align-content-center">
+    <partial name="_FaqAdminSidebarPartial" />
+    <div id="content">
+        <h2>Question Details</h2>
+        <div>
+            <button type="button" class="btn btn-primary" id="toggleEditBtn" onclick="toggleEdit()">Edit</button>
+            <button type="button" class="btn btn-primary" id="deleteSecBtn" data-toggle="modal" data-target="#deleteModal">Delete</button>
+        </div>
+        <br />
+        <div>
+            <form asp-action="EditQuestion" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="Id" asp-for="@Model.QuestionId" />
+                <div class="row">
+                    <div class="col-auto">
+                        <h4>
+                            Title:
+                        </h4>
+                    </div>
+                    <div class="col-auto">
+                        <div>
+                            <div class="form-group">
+                                <input id="titleEle" asp-for="QuestionTitle" class="form-control" cols="50"/>
+                                <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                        <h4>
+                            Section:
+                        </h4>
+                    </div>
+                    <div class="col-auto">
+                        <div>
+                            <div class="form-group ">
+                                <select id="sectionEle" asp-for="SectionId" class="form-control custom-select">
+                                    <option selected value="">Choose Section...</option>
+                                    @foreach (var sec in Model.Sections)
+                                    {
+                                        <option value="@sec.Id">@sec.SectionTitle</option>
+                                    }
 
-        <dt>
-            Article:
-        </dt>
-        <dd>
-            <div style="overflow-y: scroll; overflow-x: hidden;height:500px">
-                @Html.Raw(Model.ArticleContents)
-            </div>
-        </dd>
-    </dl>
+                                </select>
+                                <span asp-validation-for="SectionId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                        <div>
+                            <div class="form-group">
+                                <textarea id="editor" asp-for="ArticleContents" class="form-control" rows="10" cols="50"></textarea>
+                                <span asp-validation-for="ArticleContents" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to delete this Question.</p>
+                <p>Title : @Model.QuestionTitle</p>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="DeleteQuestion">
+                    <input name="Id" type="hidden" value="@Model.QuestionId" />
+                    <button type="submit" value="Delete" class="btn btn-secondary">Delete</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" language="javascript">
+    var editMode = false;
+    function toggleEdit() {
+        editMode = !editMode;
+        var editBtnEle = document.getElementById("toggleEditBtn");
+        $("#titleEle").prop("readonly", !editMode);
+        $("#sectionEle").prop("readonly", !editMode);
+        if (editMode) {
+            tinymce.activeEditor.setMode('design');
+        } else {
+            tinymce.activeEditor.setMode('readonly');
+        }
+        if (editMode) {
+            editBtnEle.innerHTML = "Cancel";
+        } else {
+            editBtnEle.innerHTML = "Edit";
+        }
+
+    }
+    $('textarea#editor').tinymce({
+        height: 500,
+        menubar: true,
+        readonly: 1,
+        plugins: [
+            'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
+            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+            'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | a11ycheck casechange blocks | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist checklist outdent indent | removeformat | code table help'
+    });
+</script>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 </body>
 </html>

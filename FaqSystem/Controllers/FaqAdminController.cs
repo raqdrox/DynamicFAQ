@@ -96,16 +96,18 @@ namespace FaqSystem.Controllers
             {
                 return NotFound();
             }
-
-            faqQuestionViewModel.SectionId = questionSection.Item2;
-            faqQuestionViewModel.QuestionTitle = questionSection.Item1.Title;
-            faqQuestionViewModel.ArticleContents = questionSection.Item1.Article.Contents;
-            var faqSection = await _context.FaqSection.FirstOrDefaultAsync(m=>m.Id== questionSection.Item2);
+            var faqSection = await _context.FaqSection.ToListAsync();
             if (faqSection == null)
             {
                 return NotFound();
             }
-            ViewBag.sectionName = faqSection.SectionTitle;
+            faqQuestionViewModel.SectionId = questionSection.Item2;
+            faqQuestionViewModel.QuestionId = id.Value;
+            faqQuestionViewModel.QuestionTitle = questionSection.Item1.Title;
+            faqQuestionViewModel.ArticleContents = questionSection.Item1.Article.Contents;
+            faqQuestionViewModel.Sections = faqSection;
+            
+            
             return View(faqQuestionViewModel);
         }
 
@@ -316,7 +318,7 @@ namespace FaqSystem.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuestion(int? id,[Bind("SectionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
+        public async Task<IActionResult> EditQuestion(int? id,[Bind("SectionId", "QuestionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
         {
             WriteDataToDebugFile(questionViewModel.ArticleContents);
             if (id == null)
@@ -325,7 +327,7 @@ namespace FaqSystem.Controllers
             }
 
             if (!ModelState.IsValid) return View(questionViewModel);
-            Tuple<FaqQuestion, int,int> questionSection = GetQuestionSectionByQId((int)id);
+            Tuple<FaqQuestion, int,int> questionSection = GetQuestionSectionByQId(questionViewModel.QuestionId);
             if (questionSection == null)
             {
                 return NotFound();
