@@ -1,4 +1,4 @@
-﻿<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSecModal">Create</button>
+﻿
 <div class="modal fade" id="createSecModal" tabindex="-1" role="dialog" aria-labelledby="createSecModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -8,21 +8,25 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <form asp-action="CreateSection">
+            <form asp-action="CreateSection">
+                <div class="modal-body">
+
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
                         <label name="SectionTitle" class="control-label"></label>
                         <input name="SectionTitle" class="form-control" />
                     </div>
+                    
+
+                </div>
+                <div class="modal-footer">
                     <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
-                </form>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -24,27 +24,28 @@
 </head>
 <body>
 
-    <div class="wrapper align-content-center">
-        
-        <partial name="_FaqAdminSidebarPartial" />
-        <div id="content">
-            <div class="hidden" id="sectionDetails">
-                <h4>Sections:</h4>
-                <partial name="_SectionCreateDialogPartial" />
-                <!-- Section Table  -->
-                <partial name="_SectionTablePartial" model="@Model"/>
-            </div>
-            <div class="hidden" id="questionDetails">
-
-                <h4>Questions:</h4>
-                <a asp-action="CreateQuestion">Create New</a>
-                <!-- Question Table -->
-                <partial name="_QuestionTablePartial" model="@Model" />
-            </div>
+<div class="wrapper align-content-center">
+    
+    <partial name="_FaqAdminSidebarPartial" />
+    <div id="content">
+        <div class="hidden" id="sectionDetails">
+            <h4>Sections:</h4>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSecModal">Create</button>
+            <!-- Section Table  -->
+            <partial name="_SectionTablePartial" model="@Model"/>
         </div>
+        <div class="hidden" id="questionDetails">
+
+            <h4>Questions:</h4>
+            <a asp-action="CreateQuestion">Create New</a>
+            <!-- Question Table -->
+            <partial name="_QuestionTablePartial" model="@Model" />
+        </div>
+    </div>
         
 
-    </div>
+</div>
+<partial name="_SectionCreateDialogPartial" />
 <script type="text/javascript" language="javascript">
     window.addEventListener('hashchange', changeHash);
     changeHash();
