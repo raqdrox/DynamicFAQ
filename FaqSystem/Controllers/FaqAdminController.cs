@@ -20,6 +20,7 @@ namespace FaqSystem.Controllers
         public FaqAdminController(ApplicationDbContext context)
         {
             _context = context;
+            
             InitHtmlSanitizer();
             RefreshSectionList();
         }
