@@ -8,11 +8,12 @@ body {
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7em;
-    color: #999;
 }
-
+.remove-all-styles {
+    all: revert;
+}
 a,
 a:hover,
 a:focus {
@@ -55,23 +56,43 @@ body {
     display: flex;
     width: 100%;
     height: 100%;
-    align-items: stretch;
+    align-items:stretch;
     position: fixed;
 }
 
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 350px;
+    max-width: 360px;
     height: 100%;
     background: #222222;
     color: #fff;
     transition: all 0.3s;
+    overflow-x: overlay;
+    overflow-y: overlay;
+}
+::-webkit-scrollbar {
+    width: 12px;
 }
 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
 
-    #sidebar.active {
-        margin-left: -250px;
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(60,60,60,0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+    ::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(60,60,60,0.4);
     }
+
 
     #sidebar .sidebar-header {
         padding: 20px;
@@ -79,7 +100,7 @@ body {
     }
 
     #sidebar ul.components {
-        padding: 20px 0;
+        padding: 20px 5px;
         border-bottom: 1px solid #000;
     }
 
@@ -90,15 +111,18 @@ body {
 
     #sidebar ul li a {
         padding: 10px;
+        padding-right: 30px;
         font-size: 1.1em;
-        display: block;
+        word-wrap: break-word;
+        white-space: normal;
+        display:block;
     }
 
         #sidebar ul li a:hover {
             color: #fff;
             background: #171717;
         }
-
+        
     #sidebar ul li.active > a,
     a[aria-expanded="true"] {
         color: #fff;
@@ -123,22 +147,6 @@ ul ul a {
     background: #222222;
 }
 
-ul.CTAs {
-    padding: 20px;
-}
-
-    ul.CTAs a {
-        text-align: center;
-        font-size: 1rem !important;
-        display: block;
-        border-radius: 5px;
-        margin-bottom: 5px;
-    }
-
-a.download {
-    background: #fff;
-    color: #171717;
-}
 
 a.article,
 a.article:hover {
@@ -172,14 +180,16 @@ a.article:hover {
     CONTENT STYLE
 ----------------------------------------------------- */
 #content {
-    width: 100%;
-    padding: 20px;
+    max-width: 100%;
+    min-width: 70%;
+    padding: 25px;
     min-height: 100vh;
-    transition: all 0.3s;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
 
+    transition: all 0.3s;
+    overflow-y: overlay;
+    overflow-x: overlay;
+    
+}
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */

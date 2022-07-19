@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FaqSystem.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace FaqSystem.Controllers
 {
@@ -16,46 +18,44 @@ namespace FaqSystem.Controllers
         private List<FaqSection> _sectionListFull;
         private List<FaqSection> _sectionListLite;
 
-        public async void RefreshSectionList()
-        {
-            _sectionListFull = await _context.FaqSection.Include(sec=>sec.QList).ThenInclude(ques=>ques.Article).ToListAsync();
-            _sectionListFull = _sectionListFull.OrderBy(x=>x.Id).ToList();
-            _sectionListFull.Remove(_sectionListFull.Single(s => s.Id == 0));
-            _sectionListLite = new List<FaqSection>();
-            foreach (var faqSection in _sectionListFull)
-            {
-                faqSection.QList = faqSection.QList.OrderBy(x => x.Id).ToList();
-                var copy = faqSection.ShallowCopy();
-                foreach (var faqQuestion in faqSection.QList)
-                {
-                    copy.QList.Add(faqQuestion.ShallowCopy());
-                }
-                _sectionListLite.Add(copy);
-                
-            }
-
-            
-        }
 
         public FaqController(ApplicationDbContext context)
         {
             _context = context;
-            RefreshSectionList();
         }
 
         // GET: Faq/Title
         public async Task<IActionResult> Index(int secId,int qId)
         {
+            var secListQuery= _context.FaqSection.Include(sec => sec.QList).Where(x=>x.Id!=0);
+            var secList= await secListQuery.ToListAsync();
+            FaqQuestion qData;
+            if (secList.Count == 0)
+                return NotFound();
+            secId = secId < secList.Count ? secId : 0;
+            qId = qId < secList[secId].QList.Count ? qId : 0;
 
-            secId = secId < _sectionListLite.Count ? secId : 0;
-            qId = qId < _sectionListLite[secId].QList.Count ? qId : 0;
+            if(secList[secId].QList.Count!=0){
+                qData =await _context.FaqQuestion.Include(x=>x.Article).Where(x=>x.Id== secList[secId].QList[qId].Id).FirstOrDefaultAsync();
+                if (qData == null)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                qData = new FaqQuestion(-1,"",new FaqArticle(-1,""));
+            }
+            var tuple = new Tuple<IEnumerable<FaqSection>, FaqQuestion>(secList, qData);
+                return View(tuple);
+            
 
-
-            var qData= _sectionListFull[secId].QList[qId];
-            var tuple = new Tuple<IEnumerable<FaqSection>, FaqQuestion>(_sectionListLite, qData);
-            return View(tuple);
 
         }
-        
+        public void WriteDataToDebugFile(string data)
+        {
+            string path = @"DebugFile.txt";
+            System.IO.File.WriteAllText(path, data);
+        }
     }
 }

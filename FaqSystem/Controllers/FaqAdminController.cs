@@ -53,11 +53,7 @@ namespace FaqSystem.Controllers
         }
 
 
-
-
-
-
-
+        
 
         // GET: FaqAdmin/Details/5
         public async Task<IActionResult> SectionDetails(int? id,string mode="details")
@@ -114,27 +110,7 @@ namespace FaqSystem.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        // GET: FaqAdmin/CreateSection
-        public IActionResult CreateSection()
-        {
-            return View();
-        }
-
         // POST: FaqAdmin/CreateSection
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSection([Bind("Id,SectionTitle")] FaqSection faqSection)
@@ -146,7 +122,7 @@ namespace FaqSystem.Controllers
                 RefreshSectionList();
                 return RedirectToAction(nameof(Index));
             }
-            return View(faqSection);
+            return RedirectToAction(nameof(Index));//Fix this validation redirect
         }
 
 
@@ -170,8 +146,6 @@ namespace FaqSystem.Controllers
         }
 
         // POST: FaqAdmin/CreateQuestion
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateQuestion([Bind("SectionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
@@ -201,42 +175,7 @@ namespace FaqSystem.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // GET: FaqAdmin/Edit/5
-        public async Task<IActionResult> EditSection(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            if (id.Value == 0)
-            {
-                return NotFound();
-            }
-            var faqSection = _sectionList.FirstOrDefault(s=>s.Id== id.Value);
-            if (faqSection == null)
-            {
-                return NotFound();
-            }
-            return View(faqSection);
-        }
-
         // POST: FaqAdmin/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSection([Bind("Id,SectionTitle")] FaqSection faqSection)
@@ -248,7 +187,7 @@ namespace FaqSystem.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) return View(faqSection);
+            if (!ModelState.IsValid) return View("SectionDetails",faqSection);//Fix this validation redirect
             try
             {
                 sec.SectionTitle = faqSection.SectionTitle;
@@ -287,36 +226,9 @@ namespace FaqSystem.Controllers
 
 
 
-        // GET: FaqAdmin/Edit/5
-        public async Task<IActionResult> EditQuestionView(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            
-            FaqQuestionViewModel faqQuestionViewModel = new FaqQuestionViewModel();
-
-            Tuple<FaqQuestion, int,int> questionSection =GetQuestionSectionByQId((int)id);
-            if (questionSection == null)
-            {
-                return NotFound();
-            }
-
-            faqQuestionViewModel.SectionId = questionSection.Item2;
-            faqQuestionViewModel.QuestionTitle = questionSection.Item1.Title;
-            faqQuestionViewModel.ArticleContents = questionSection.Item1.Article.Contents;
-            var faqSection = await _context.FaqSection.ToListAsync();
-            ViewBag.sectionList = faqSection;
-            return View(faqQuestionViewModel);
-        }
-
 
 
         // POST: FaqAdmin/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("EditQuestion")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditQuestionPost([Bind("SectionId", "QuestionId", "QuestionTitle", "ArticleContents")] FaqQuestionViewModel questionViewModel)
@@ -324,7 +236,7 @@ namespace FaqSystem.Controllers
             WriteDataToDebugFile(questionViewModel.ArticleContents+"\n\n"+ questionViewModel.QuestionId+"\n\n"+ questionViewModel.QuestionTitle+"\n\n"+ questionViewModel.SectionId);
             
 
-            if (!ModelState.IsValid) return NotFound();
+            if (!ModelState.IsValid) return NotFound();//Fix this validation redirect
             Tuple<FaqQuestion, int,int> questionSection = GetQuestionSectionByQId(questionViewModel.QuestionId);
             if (questionSection == null)
             {
@@ -364,45 +276,10 @@ namespace FaqSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // GET: FaqAdmin/Delete/5
-        public async Task<IActionResult> DeleteSection(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            if (id == 0)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            var faqSection = await _context.FaqSection
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (faqSection == null)
-            {
-                return NotFound();
-            }
-
-            return View(faqSection);
-        }
-
         // POST: FaqAdmin/Delete/5
-        [HttpPost, ActionName("DeleteSection")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteSectionConfirmed(int id)
+        public async Task<IActionResult> DeleteSection(int id)
         {
             var faqSection = _sectionList.FirstOrDefault(m=>m.Id== id);
             var defaultSection = _sectionList.FirstOrDefault(m => m.Id == 0);
@@ -429,40 +306,10 @@ namespace FaqSystem.Controllers
 
 
 
-
-
-
-
-
-
-
-        // GET: FaqAdmin/Delete/5
-        public async Task<IActionResult> DeleteQuestion(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            FaqQuestionViewModel faqQuestionViewModel = new FaqQuestionViewModel();
-
-            Tuple<FaqQuestion, int, int> questionSection = GetQuestionSectionByQId(id.Value);
-            if (questionSection == null)
-            {
-                return NotFound();
-            }
-
-            faqQuestionViewModel.SectionId = questionSection.Item2;
-            faqQuestionViewModel.QuestionTitle = questionSection.Item1.Title;
-            faqQuestionViewModel.ArticleContents = questionSection.Item1.Article.Contents;
-            ViewBag.SectionTitle = _sectionList.First(y => y.Id == questionSection.Item2).SectionTitle;
-            return View(faqQuestionViewModel);
-        }
-
         // POST: FaqAdmin/Delete/5
-        [HttpPost, ActionName("DeleteQuestion")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteQuestionConfirmed(int id)
+        public async Task<IActionResult> DeleteQuestion(int id)
         {
             Tuple<FaqQuestion, int, int> questionSection = GetQuestionSectionByQId((int)id);
             if (questionSection == null)
@@ -481,19 +328,6 @@ namespace FaqSystem.Controllers
             RefreshSectionList();
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
