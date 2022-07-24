@@ -5,7 +5,7 @@
     <thead>
         <tr>
             <th>
-                SID
+                S No.
             </th>
             <th>
                 Section Title
@@ -19,22 +19,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @item.Id
-        </td>
-        <td>
-            @item.SectionTitle
-        </td>
-        <td>
-            @item.QList.Count
-        </td>
-        <td>
-            <a asp-action="SectionDetails" asp-route-id="@item.Id" asp-route-mode="details">Details</a>
-        </td>
-    </tr>
-}
+    @{var i=1;}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @i
+            </td>
+            <td>
+                @item.SectionTitle
+            </td>
+            <td>
+                @item.QList.Count
+            </td>
+            <td>
+                <a class="btn btn-info btn-sm"asp-action="SectionDetails" asp-route-id="@item.Id" asp-route-mode="details">Details</a>
+            </td>
+        </tr>
+        i++;}
     </tbody>
 </table>
 <script language="javascript" type="text/javascript">

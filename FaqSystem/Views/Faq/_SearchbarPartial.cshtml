@@ -4,30 +4,32 @@
 }
 
 <!-- search -->
-<div class="search-form-container">
-    <div class="search-wrapper">
-        <input type="search" id="search" placeholder="Search for Question" data-search>
+
+<div class="search-wrapper">
+    <div>
+    <input class="search-input" type="search" id="search" placeholder="Search for Question" data-search>
     </div>
     <div class="search-results stack-top hidden" id="searchResults">
         @{
             var mdl = Model.ToList();
         }
-        
+
         @for (int i = 0; i < mdl.Count; i++)
         {
 
             @for (int j = 0; j < mdl[i].QList.Count; j++)
             {
-                        
+
                 <div class="suggestion-item hidden" data-tags=" [] "><a asp-action="Index" asp-route-secId="@i" asp-route-qId="@j">@mdl[i].QList[j].Title</a></div>
             }
 
         }
     </div>
-</div> 
+</div>
     <script type="text/javascript" language="javascript">
         var secArray =@Html.Raw(Json.Serialize(Model.ToList()));
         var searchResultBox;
+        
         $(document).ready(function () {
 
             var searchInput = document.querySelector("[data-search]");
@@ -37,6 +39,7 @@
                 var q = $(searchResults[x]).children("a").get(0).textContent;
                 return { title: q, element: $(searchResults[x]).get(0) }
             });
+
             searchInput.addEventListener("input",
                 e => {
                     var value = e.target.value.toLowerCase();
@@ -53,6 +56,16 @@
                     
 
                 });
+            
+        });
+        $(document).on("click touchstart", function (e) {
+            var t = $(e.target).closest('#search');
+            var exceptDiv = $('#search');
+            if (exceptDiv.is(t) == false) {
+                $('#searchResults').hide();
+            } else {
+                $('#searchResults').show();
+            }
         });
         
     </script>

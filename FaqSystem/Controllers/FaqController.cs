@@ -52,10 +52,5 @@ namespace FaqSystem.Controllers
 
 
         }
-        public void WriteDataToDebugFile(string data)
-        {
-            string path = @"DebugFile.txt";
-            System.IO.File.WriteAllText(path, data);
-        }
     }
 }

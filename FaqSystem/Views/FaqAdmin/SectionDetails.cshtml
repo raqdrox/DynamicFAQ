@@ -22,56 +22,45 @@
 </head>
 <body>
 <div class="wrapper align-content-center">
-    <partial name="_FaqAdminSidebarPartial" />
+    @{var x="sections";}
+    <partial name="_FaqAdminSidebarPartial" model="@x"/>
     <div id="content">
         <h2>Section Details</h2>
-        @if (Model.Id != 0)
-        {
-        <div>
-            <button type="button" class="btn btn-primary" id="toggleEditBtn" onclick="toggleEdit()">Edit</button>
-            <button type="button" class="btn btn-primary" id="deleteSecBtn" data-toggle="modal" data-target="#deleteModal">Delete</button>
-        </div>
-
-        }
         <br/>
         <div>
-            <div class="row">
-                <div class="col-auto">
+                
+            <form asp-action="EditSection" method="post">
+                @if (Model.Id != 0)
+                {
+                    <div>
+                        <button type="button" class="btn btn-info btn-sm" id="toggleEditBtn" onclick="toggleEdit()">Edit</button>
+                        <input type="submit" value="Save" class="btn btn-success btn-sm hidden" id="submitBtn" />
+                        <button type="button" class="btn btn-danger btn-sm" id="deleteSecBtn" data-toggle="modal" data-target="#deleteModal">Delete</button>
+
+                    </div>
+
+                }<br />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="Id" asp-for="@Model.Id"/>
+                <div class="form-group">
                     <h4>
-                        Title:
-                    </h4>
-                </div>
-                <div class="col-auto">
-                    <div id="editTitle" class="hidden">
-                        <form asp-action="EditSection" method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" name="Id" asp-for="@Model.Id" />
-                            <div class="form-group">
-                                <input name="SectionTitle" asp-for="@Model.SectionTitle" class="form-control" />
-                                <span asp-validation-for="@Model.SectionTitle" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-primary" />
-                            </div>
-                        </form>
-                    </div>
-                    <div id="displayTitle">
-                        <h4>@Model.SectionTitle</h4>
-                    </div>
-                </div>
-            </div>
+                    <label asp-for="SectionTitle" class="control-label">Title:</label></h4>
+                        <input id="titleEle" name="SectionTitle" asp-for="@Model.SectionTitle" class="form-control " readonly />
+                        <span asp-validation-for="@Model.SectionTitle" class="text-danger"></span>
+</div>
+            </form>
             <br/>
             <div>
                 <h4>Questions:</h4>
                 <p>
-                    <a class="btn btn-primary" asp-action="CreateQuestion">Create</a>
+                    <a class="btn btn-primary btn-sm" asp-action="CreateQuestion">Create</a>
                 </p>
 
                 <partial name="_QuestionTablePartial" model="@new List<FaqSection>(){Model};" />
 
             </div>
         </div>
-        <a class="btn btn-primary" asp-action="Index">Back to List</a>
+        <a class="btn btn-outline-info btn-sm" asp-action="Index" asp-fragment="sections">Back to List</a>
 
     </div>
 </div>
@@ -92,18 +81,20 @@
             <div class="modal-footer">
                 <form asp-action="DeleteSection">
                     <input name="Id" type="hidden" asp-for="@Model.Id" />
-                    <button type="submit" value="Delete" class="btn btn-secondary">Delete</button>
+                    <button type="submit" value="Delete" class="btn btn-danger">Delete</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-        <script type="text/javascript" language="javascript">
+<script type="text/javascript" language="javascript">
             var editMode = false;
+            var oldtitle = "@Model.SectionTitle";
             var mode =@ViewData["Mode"];
-            $(document).ready(function() {
-                switch (mode) {
+            $(document).ready(function () {
+                $("#titleEle").prop("readonly", !editMode);
+                /*switch (mode) {
                     case "details":
                         break;
                     case "edit":
@@ -114,24 +105,30 @@
                         break;
                     default:
                         break;
-                }
+                }*/
             });
             function toggleEdit() {
+
                 editMode = !editMode;
-                var editEle = document.getElementById("editTitle");
-                var displayEle = document.getElementById("displayTitle");
+                $("#titleEle").prop("readonly", !editMode); 
                 var editBtnEle = document.getElementById("toggleEditBtn");
-                editEle.classList.toggle("hidden");
-                displayEle.classList.toggle("hidden");
+                var submitBtn = document.getElementById("submitBtn");
+                submitBtn.classList.toggle("hidden", !editMode);
                 if (editMode) {
                     editBtnEle.innerHTML = "Cancel";
+                    editBtnEle.classList.toggle("btn-secondary", true);
+                    editBtnEle.classList.toggle("btn-info", false);
                 } else {
                     editBtnEle.innerHTML = "Edit";
+                    editBtnEle.classList.toggle("btn-secondary", false);
+                    editBtnEle.classList.toggle("btn-info", true);
+                    $("#titleEle").prop("value", oldtitle);  
                 }
 
             }
 
-        </script>
+
+</script>
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 </body>

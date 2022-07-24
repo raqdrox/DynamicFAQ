@@ -24,9 +24,10 @@
 </head>
 <body>
 
-<div class="wrapper align-content-center">
+<div class="wrapper">
     
-    <partial name="_FaqAdminSidebarPartial" />
+    @{var x="sections";}
+    <partial name="_FaqAdminSidebarPartial" model="@x"/>
     <div id="content">
 
 

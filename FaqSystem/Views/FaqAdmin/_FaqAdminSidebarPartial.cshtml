@@ -1,4 +1,5 @@
-﻿<nav id="sidebar" class="">
+﻿@model string
+<nav id="sidebar" class="">
     <div class="sidebar-header">
         <h3>Navigation</h3>
     </div>
@@ -10,6 +11,7 @@
 
 </nav>
 <script type="text/javascript" language="javascript">
+    var defOption="@Model";
     window.addEventListener('hashchange', changeHashSidebar);
     changeHashSidebar();
     function changeHashSidebar() {
@@ -24,10 +26,16 @@
             document.getElementById("questionSidebarOp").classList.toggle("active", true);
             break;
             
-        default:
-            document.getElementById("sectionSidebarOp").classList.toggle("active", true);
-            document.getElementById("questionSidebarOp").classList.toggle("active", false);
+            default:
+                if (defOption !== "") {
+                    document.getElementById("sectionSidebarOp").classList.toggle("active", defOption==="sections");
+                    document.getElementById("questionSidebarOp").classList.toggle("active", defOption === "questions");
+                }
+                else{document.getElementById("sectionSidebarOp").classList.toggle("active", true);
+                    document.getElementById("questionSidebarOp").classList.toggle("active", false);}
+            
             break;
         }
     }
+
 </script>

@@ -1,11 +1,16 @@
-﻿@model FaqSystem.Models.FaqQuestion
+﻿@model Tuple<IEnumerable<FaqSystem.Models.FaqSection>, FaqQuestion>
 
 <div id="content">
-    <br />
-    <h1>@Html.Raw(Model.Title)</h1>
-    <br />
-    <br />
+    <!-- Search  -->
+    <div class="stack-top search-bar">
+        <partial name="_SearchbarPartial" model="@Model.Item1" />
+    </div>
+    <br/>
+    <br/>
+    <h1>@Html.Raw(Model.Item2.Title)</h1>
+    <br/>
+    <br/>
     <div >
-        @Html.Raw(Model.Article.Contents)
+        @Html.Raw(Model.Item2.Article.Contents)
     </div>
 </div>

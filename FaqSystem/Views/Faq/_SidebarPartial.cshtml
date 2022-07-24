@@ -1,11 +1,10 @@
 ﻿@model IEnumerable<FaqSystem.Models.FaqSection>
 
-<nav id="sidebar">
+<nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>Frequently Asked Questions</h3>
     </div>
-    <!-- Search  -->
-    <partial name="_SearchbarPartial" model="@Model" />
+    
 
     <ul class="list-unstyled components" id="SectionNavList">
         @{var mdl = Model.ToList();}

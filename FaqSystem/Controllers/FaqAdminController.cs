@@ -65,7 +65,7 @@ namespace FaqSystem.Controllers
 
             mode = mode.ToLower();
 
-            var faqSection = await _context.FaqSection.Include(q=>q.QList)
+            var faqSection = await _context.FaqSection
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (faqSection == null)
             {
@@ -170,8 +170,8 @@ namespace FaqSystem.Controllers
 
         public void WriteDataToDebugFile(string data)
         {
-            string path = @"DebugFile.txt";
-            System.IO.File.WriteAllText(path, data);
+            //string path = @"DebugFile.txt";
+            //System.IO.File.WriteAllText(path, data);
         }
 
 
