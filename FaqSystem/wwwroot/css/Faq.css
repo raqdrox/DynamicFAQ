@@ -48,8 +48,8 @@ body {
 }
 
 #sidebar {
-    min-width: 350px;
-    max-width: 360px;
+    min-width: 400px;
+    max-width: 400px;
     height: 100%;
     background: #222222;
     color: #fff;

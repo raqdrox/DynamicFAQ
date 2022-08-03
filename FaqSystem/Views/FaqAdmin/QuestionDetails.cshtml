@@ -44,31 +44,30 @@
 
             <br />
 
-            <div class="form-group"><h4>
-    <label asp-for="QuestionTitle" class="control-label">Title:</label>
-</h4>
-                <input id="titleEle" asp-for="QuestionTitle" class="form-control " cols="50" readonly />
-                <span asp-validation-for="QuestionTitle" class="text-danger"></span>
-            </div>
-
 
             <div class="form-group ">
                 <h4>
                     <label asp-for="SectionId" class="control-label">Section:</label></h4>
-                    <select id="sectionEle" asp-for="SectionId" class="form-control custom-select disabled">
-                        <option selected value="">Choose Section...</option>
-                        @if (ViewData.ContainsKey("Sections"))
+                <select id="sectionEle" asp-for="SectionId" class="form-control custom-select disabled">
+                    <option selected value="">Choose Section...</option>
+                    @if (ViewData.ContainsKey("Sections"))
+                    {
+                        foreach (var sec in ViewData["Sections"] as List<FaqSection>)
                         {
-                            foreach (var sec in ViewData["Sections"] as List<FaqSection>)
-                            {
-                                <option value="@sec.Id">@sec.SectionTitle</option>
-                            }
-
+                            <option value="@sec.Id">@sec.SectionTitle</option>
                         }
 
-                    </select>
-                    <span asp-validation-for="SectionId" class="text-danger"></span>
-</div>
+                    }
+
+                </select>
+                <span asp-validation-for="SectionId" class="text-danger"></span>
+            </div>
+            <div class="form-group"><h4>
+                    <label asp-for="QuestionTitle" class="control-label">Title:</label>
+                </h4>
+                <input id="titleEle" asp-for="QuestionTitle" class="form-control " cols="50" readonly />
+                <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+            </div>
 
             <div class="form-group">
                 <h4>
