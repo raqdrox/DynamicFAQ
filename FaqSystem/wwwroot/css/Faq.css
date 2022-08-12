@@ -57,6 +57,10 @@ body {
     overflow-x: overlay;
     overflow-y: overlay;
 }
+.sidebar-admin {
+    min-width: 300px !important;
+    max-width: 300px !important;
+}
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -83,6 +87,8 @@ body {
 
     #sidebar .sidebar-header {
         padding: 20px;
+        padding-top:40px;
+        padding-bottom:10px;
         background: #222222;
     }
 

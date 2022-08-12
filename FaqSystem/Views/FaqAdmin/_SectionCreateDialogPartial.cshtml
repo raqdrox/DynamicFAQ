@@ -14,13 +14,15 @@
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
                         <label name="SectionTitle" class="control-label"></label>
-                        <input name="SectionTitle" class="form-control" />
+                        <input id="SecName" name="SectionTitle" class="form-control" />
+                        <span style="color:red;" id="CreateSecVal" class="hidden">Invalid Section Name</span>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success">Create</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" onclick="CheckSecName()">Create</button>
+                        <button id="subBtn" type="submit" class="hidden" ></button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetDialog()">Close</button>
                     </div>
 
                 </div>
@@ -28,3 +30,23 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function CheckSecName() {
+        secN = document.getElementById("SecName");
+        secVal = document.getElementById("CreateSecVal");
+        subBtn = document.getElementById("subBtn");
+        if (secN.value.trim() === "") {
+            secVal.classList.toggle("hidden", false);
+        }
+        else {
+            secVal.classList.toggle("hidden", true);
+            subBtn.click();
+        }
+    }
+    function resetDialog() {
+        secN = document.getElementById("SecName");
+        secVal = document.getElementById("CreateSecVal");
+        secN.value = "";
+        secVal.classList.toggle("hidden", true);
+    }
+</script>
